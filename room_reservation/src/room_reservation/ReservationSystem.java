@@ -1,18 +1,5 @@
 package room_reservation;
 
-<<<<<<< HEAD
-/*
-+ 예약 내역 조회 : void
-+ 예약 불가능 여부 조회 : void
-+ 펜션 예약 : void
-+ 펜션 예약 변경 : void
-+ 펜션 예약 취소 : void
-+ 펜션 목록 보기() : void
-+ 펜션 상세 조회(int) : void
-+ 리뷰 조회() : void
-+ 리뷰글 작성() : void
- */
-=======
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
->>>>>>> 5a5db890b5b8df433b9ad91d1efe7a645b06e0f2
 public class ReservationSystem {
 	private Scanner sc;
 	private FileIO fileIO;
