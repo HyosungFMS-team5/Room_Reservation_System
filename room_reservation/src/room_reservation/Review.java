@@ -6,10 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Review {
-	String userId;
-	String roomId;
-	double score;
-	String content;
+	private String userId;
+	private String roomId;
+	private double score;
+	private String content;
 	
 	public Review(String userId, String roomId, String content) {
 		this.userId = userId;
