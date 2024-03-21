@@ -45,7 +45,7 @@ public class FileIO {
 		ObjectOutputStream out = null;
 		
 		try {
-			// 입출력 관렬 객체 초기화
+			// 입출력 관련 객체 초기화
 			boolean fileExist = file.exists() && file.length() > 0;
 			fos = new FileOutputStream(file, true);
 			bos = new BufferedOutputStream(fos);
