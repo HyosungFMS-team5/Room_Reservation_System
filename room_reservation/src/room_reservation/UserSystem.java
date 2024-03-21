@@ -13,6 +13,7 @@ public class UserSystem {
 	private FileIO fileIO;
 	private boolean loggedIn;
 	private User user;
+	private String userId;
 	
 	public UserSystem(Scanner sc, FileIO fileIO) {
 		this.sc = sc;
@@ -58,6 +59,7 @@ public class UserSystem {
 		} else {
 			System.out.println("로그인에 성공하였습니다.");
 			loggedIn = true;
+			this.userId = inputID;
 		}
 	}
 	

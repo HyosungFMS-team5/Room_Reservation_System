@@ -1,6 +1,8 @@
 package room_reservation;
 
-public class CampingCarRoom extends Room{
+import java.io.Serializable;
+
+public class CampingCarRoom extends Room implements Serializable{
 
 	public CampingCarRoom(String roomId, String roomName, int capacity, String description) {
 		super(roomId, roomName, capacity, description);
