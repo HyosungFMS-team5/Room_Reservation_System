@@ -12,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class User implements Serializable{
-	private String userID;
+	private String userID; // pk
 	private String userPW;
 	private String phone;
 }

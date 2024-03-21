@@ -19,7 +19,8 @@ public abstract class Room implements Serializable {
 	private String roomName;
 	private int capacity;
 	private String description;
-	private Map<Date, Boolean> bookedDate;  // 날짜가 키에 존재하면 불가능한 날짜, 없으면 가능한 날짜
+//	private Map<Date, Boolean> bookedDate;  // 날짜가 키에 존재하면 불가능한 날짜, 없으면 가능한 날짜
+	private Map<String, Boolean> bookedDate;
 	
 	public Room(String roomId, String roomName, int capacity, String description) {
 		this.roomId = roomId;

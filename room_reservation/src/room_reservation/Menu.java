@@ -61,7 +61,7 @@ public class Menu {
 	
 	// 예약시스템 조회 - 예약 관련 서비스 모두
 	public void displayReservation() {
-		reservationSystem = new ReservationSystem(sc, fileIO);
+		reservationSystem = new ReservationSystem(sc, fileIO, userSystem);
 		reservationSystem.run();
 	}
 	
