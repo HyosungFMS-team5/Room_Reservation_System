@@ -21,7 +21,7 @@ class MyNumber{}
 ### 깃 컨벤션
 
 1. 브랜치는 시스템별로 분화(User, Admin, Reservation)
-2. 커밋 메세지는 `[Add] 1.상세내용` 형식으로 간단하게
+2. 커밋 메세지는 `[Add]-Hanju add example` 형식으로 간단하게
   - [Add] : 새로운 파일 생성
   - [Update] : 기능 수정 및 코드 리팩토링
   - [Fix] : 오류 수정
