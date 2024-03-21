@@ -1,5 +1,9 @@
 package room_reservation;
 
-public class Admin {
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+public class Admin {
+	private final String adminPW = "admin1234";
 }

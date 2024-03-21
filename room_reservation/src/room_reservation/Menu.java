@@ -7,9 +7,9 @@ public class Menu {
 	private FileIO fileIO;
 	private boolean LoggedIn;
 	private boolean isUser;
-	UserSystem userSystem;
-	AdminSystem adminSystem;
-	ReservationSystem reservationSystem;
+	private UserSystem userSystem;
+	private AdminSystem adminSystem;
+	private ReservationSystem reservationSystem;
 	
 	// 생성자
 	public Menu( ) {
@@ -24,7 +24,7 @@ public class Menu {
 			if (isUser) displayUserSystem();
 			else displayAdminSystem();
 		}
-		if (isUser) displayService();
+		if (isUser) displayReservation();
 		System.out.println("예약시스템을 종료합니다.");
 	}
 	
@@ -59,8 +59,9 @@ public class Menu {
 	}
 	
 	// 예약시스템 조회 - 예약 관련 서비스 모두
-	public void displayService() {
-		
+	public void displayReservation() {
+		reservationSystem = new ReservationSystem();
+		reservationSystem.run();
 	}
 	
 
