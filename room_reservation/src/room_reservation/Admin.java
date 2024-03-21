@@ -5,5 +5,5 @@ import lombok.Setter;
 
 @Getter
 public class Admin {
-	private final String adminPW = "admin1234";
+	final static String adminPW = "admin1234";
 }

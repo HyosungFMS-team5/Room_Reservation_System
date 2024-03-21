@@ -55,7 +55,8 @@ public class Menu {
 	
 	// 관리자 시스템 조회 - 관리자 관련 기능 모두
 	public void displayAdminSystem() {
-		
+		adminSystem = new AdminSystem(sc, fileIO);
+		adminSystem.run();
 	}
 	
 	// 예약시스템 조회 - 예약 관련 서비스 모두
