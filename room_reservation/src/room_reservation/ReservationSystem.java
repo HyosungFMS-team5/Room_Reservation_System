@@ -176,11 +176,24 @@ public class ReservationSystem {
 					// booked에 date 키로 집어넣고 , reservation data 집어넣고 break
 					
 					// TODO: 이거 이렇게 넣으면 안될듯 , 데이터에 저장해줘야함 
-					for (String date: dateList) {
-						System.out.println(date);
-						pickRoom.getBookedDate().put(date, true);
-						System.out.println(pickRoom.getBookedDate().toString()); 
+					Map<String, Room> roomMap = fileIO.roomLoad();
+					List<Room> temp = new ArrayList<>();
+					
+					for (Map.Entry<String, Room> e : roomMap.entrySet()) {
+						if (e.getKey().equals(pickRoom.getRoomId())) {
+							for (String date: dateList) {
+								e.getValue().getBookedDate().put(date, true);
+							}
+							temp.add(e.getValue());
+						} else {
+							temp.add(e.getValue());
+						}
 					}
+					
+					for (Room room : temp) {
+						fileIO.roomSave(room);
+					}
+					
 					
 					System.out.println(userSystem.getUserId());
 					System.out.println(pickRoom.getRoomId());
