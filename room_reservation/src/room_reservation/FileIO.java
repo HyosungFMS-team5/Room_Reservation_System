@@ -194,38 +194,6 @@ public class FileIO {
 	
 	
 	// 예약 내역 저장
-//	public void reservationSave(Reservation reservation) {
-//		File file  = new File("ReservationData.txt");
-//
-//		FileOutputStream fos = null;
-//		BufferedOutputStream bos = null;
-//		ObjectOutputStream out = null;
-//		
-//		try {
-//			// 입출력 관렬 객체 초기화
-//			boolean fileExist = file.exists() && file.length() > 0;
-//			fos = new FileOutputStream(file, true);
-//			bos = new BufferedOutputStream(fos);
-//			out = fileExist ? new AppendableObjectOutputStream(bos) : new ObjectOutputStream(bos);  // 직렬화 지원 객체
-//			
-//			// 직렬화
-//			out.writeObject(reservation);
-//
-//		} catch(Exception e) {
-//			// 예외 처리 - 나중에
-//			e.printStackTrace();
-//		} finally {
-//			// 파일 종료
-//			try {
-//				out.close();
-//				bos.close();
-//				fos.close();
-//			} catch (Exception e) {
-//				// 나중에
-//				e.printStackTrace();
-//			}
-//		}
-//	}
 	
 	public void reservationSave(List<Reservation> reservationList) {
 		File file  = new File("ReservationData.txt");
@@ -260,47 +228,7 @@ public class FileIO {
 	}
 	
 	// 예약 내역 불러오기
-//	public List<Reservation> reservationLoad() {
-//		List<Reservation> reservationList = new ArrayList<>();
-//		
-//		String filename = "ReservationData.txt";
-//		
-//		FileInputStream fis = null;
-//		BufferedInputStream bis = null;
-//		ObjectInputStream ois = null;
-//		
-//		try {
-//			fis = new FileInputStream(filename);
-//			bis = new BufferedInputStream(fis);
-//			ois = new ObjectInputStream(bis);
-//			
-//			Reservation reservation = null;
-//			while((reservation = (Reservation)ois.readObject()) != null) {
-//				reservationList.add(reservation);
-//			}
-//			
-//		} catch (FileNotFoundException e) {  // 잘못된 경로
-//			System.out.println("파일이 존재하지 않습니다");
-//		} catch (EOFException e) {  // 파일의 끝
-//		} catch (IOException e) {  // 입출력 에러
-//			e.printStackTrace();
-//			System.out.println("파일을 읽을 수 없습니다");
-//		} catch (ClassNotFoundException e) {  // 클래스 에러
-//			System.out.println("잘못된 객체입니다");
-//		} catch (Exception e) {
-//			System.out.println("오류가 발생하였습니다");
-//		}finally {
-//			try {
-//				ois.close();
-//				bis.close();
-//				fis.close();
-//			} catch (Exception e2) {
-//				System.out.println(e2.getMessage());
-//			}
-//		}
-//
-//		return reservationList;
-//	}
+
 	public List<Reservation> reservationLoad() {
 		List<Reservation> reservationList = new ArrayList<>();
 		
