@@ -195,17 +195,16 @@ public class ReservationSystem {
 					}
 					
 					
-					System.out.println(userSystem.getUserId());
-					System.out.println(pickRoom.getRoomId());
-					System.out.println(checkInDate);
-					System.out.println(checkOutDate);
-					System.out.println(checkInPerson);
+					System.out.println("정상적으로 예약되었습니다.");
 					
-					fileIO.reservationSave(new Reservation(userSystem.getUserId(),
-															pickRoom.getRoomId(), 
-															checkInDate,
-															checkOutDate,
-															checkInPerson));
+					List<Reservation> reservationList = fileIO.reservationLoad();
+					reservationList.add(new Reservation(userSystem.getUserId(),
+														pickRoom.getRoomId(), 
+														checkInDate,
+														checkOutDate,
+														checkInPerson));
+					
+					fileIO.reservationSave(reservationList);
 				
 					break;
 					
