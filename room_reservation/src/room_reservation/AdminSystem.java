@@ -1,6 +1,7 @@
 package room_reservation;
 
 import java.security.KeyStore.Entry;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -29,7 +30,7 @@ public class AdminSystem {
 	// 메뉴 보여주기
 	private void showMenu() {
 		while(true) {
-			System.out.println("1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 정보 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | 0. 뒤로 가기");
+			System.out.println("1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | 0. 뒤로 가기");
 			String choice = sc.nextLine();
 			switch (choice) {
 			case "1":
@@ -39,16 +40,16 @@ public class AdminSystem {
 				addRoom();
 				break;
 			case "3":
-				
+				roomInfoChange();
 				break;
 			case "4":
-				
+				deleteRoomInfo();
 				break;
 			case "5":
-				
+				showReservation();
 				break;
 			case "6":
-				
+				cancelReservation();
 				break;
 			case "0":
 				return;
@@ -58,6 +59,126 @@ public class AdminSystem {
 			}
 		}
 
+	}
+	
+	// 방 목록 보여주기
+	private void ShowRoom() {
+		Map<String, Room> roomMap = fileIO.roomLoad();
+		
+		for (Map.Entry<String, Room> e : roomMap.entrySet()) {
+			// 출력형식 수정해주세요.
+			System.out.println(e.getKey() + " : " + e.getValue().toString());
+		}
+	}
+	
+	// 방 상세 조회 
+	private void showRoomDetail(Room room) {
+		System.out.println(room.getRoomId() + "번 방 상세 내역");
+		System.out.println("===========================================");
+		System.out.println("방 이름 : " + room.getRoomName());
+		System.out.println("최대 수용인원 : " + room.getCapacity());
+		System.out.println("===========================================");
+	}
+	
+	// 방 세부 정보 수정
+	private void roomDetailInfoChange(Room room) {
+		System.out.println("수정할 사항 1. 최대 수용 인원 2. 방 상세 설명  3. 뒤로가기");
+		String detailType = sc.nextLine();
+		switch (detailType) {
+		
+		case "1": {
+			System.out.println("변경 최대 수용 인원을 입력해주세요.");
+			int changeCapacity = Integer.parseInt(sc.nextLine());
+			room.setCapacity(changeCapacity);
+			break;
+
+		}
+		case "2": {
+			System.out.println("수정할 방 상세 설명에 대해 말해주세요.");
+			String description = sc.nextLine();
+			room.setDescription(description);
+				}
+		case "3": {
+			return;
+		}
+		default:
+			System.out.println("잘못된 입력입니다.");
+			break;
+		}
+	}
+	
+	public void displayRoomInfo(Map<String, Room> roomMap) {
+        if (roomMap.isEmpty()) {
+            System.out.println("방이 없습니다.");
+        } else {
+            for (Room room : roomMap.values()) {
+                System.out.println(room);
+            }
+        }
+    }
+	
+	// 방 정보 수정
+	private void roomInfoChange() {
+	
+		System.out.println("------------------------------현재 방 목록입니다------------------------------");
+		ShowRoom();
+		System.out.println("-----------------------------------------------------------------------------------");
+		
+		//System.out.println("수정할 방 타입을 선택해주세요. 1. TentRoom 2. CampingRoom");
+		
+		System.out.println("수정할 방 ID를 입력해주세요.");
+		// 방 타입 선택 roomId으로 받음
+		String roomId = sc.nextLine();
+		
+		Map<String, Room> roomMap = fileIO.roomLoad();
+		FileIO fileIO = new FileIO();
+		
+		if(roomMap.containsKey(roomId)) {
+			 for (Room room : roomMap.values()) {
+				roomDetailInfoChange(room);
+				fileIO.roomSave(roomMap);
+				displayRoomInfo(roomMap);
+				System.out.println("방 정보가 성공적으로 수정되었습니다.");
+			 }
+		}
+		else {
+			System.out.println("해당하는 방 정보가 없습니다.");
+		}
+		
+		
+}
+	
+
+	
+	private void deleteRoomInfo() {
+	    Map<String, Room> roomMap = fileIO.roomLoad(); // 방 정보 로드
+
+	    System.out.println("------------------------------현재 방 목록입니다------------------------------");
+	    showAllRooms();
+	    System.out.println("-----------------------------------------------------------------------------------");
+
+	    System.out.println("삭제할 방 ID를 입력해주세요.");
+	    String roomId = sc.nextLine();
+	    
+	    if (roomMap.containsKey(roomId)) {
+	        roomMap.remove(roomId); // 방 삭제
+	        fileIO.roomSave(roomMap); // 변경된 방 정보를 파일에 저장
+	        System.out.println("방 정보가 성공적으로 삭제되었습니다.");
+	        showAllRooms(); // 변경된 방 목록 출력
+	    } else {
+	        System.out.println("해당하는 방 정보가 없습니다.");
+	    }
+	}
+
+
+	// 예약 내역 조회
+	private void showReservation() {
+		
+	}
+	
+	// 예약 취소
+	private void cancelReservation() {
+		
 	}
 	
 	// 관리자 로그인
