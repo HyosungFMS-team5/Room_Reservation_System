@@ -148,6 +148,7 @@ public class FileIO {
 		}
 	}
 	
+	
 	// 방 데이터 불러오기
 	public Map<String, Room> roomLoad() {
 		Map<String, Room> roomMap = new HashMap<>();

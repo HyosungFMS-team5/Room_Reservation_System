@@ -6,7 +6,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"checkInDate", "checkOutDate"})
 public class Reservation implements Serializable{
 	private String userId;
 	private String roomId;

@@ -255,8 +255,18 @@ public class ReservationSystem {
 	
 	// 나의 예약 내역
     public void showMyReservation() {
-    	List<Reservation> resevationList = fileIO.reservationLoad();
-    	System.out.println(resevationList.toString());
+    	List<Reservation> reservationList = fileIO.reservationLoad();
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
+    	for (Reservation r : reservationList) {
+    		if (r.getUserId().equals(userSystem.getUserId())) {
+    			
+    			System.out.println("예약자 : " + r.getUserId() + "| 방번호 : " + r.getRoomId() + " | 숙박인원 : " + r.getPersonCnt());
+    			System.out.println("체크인 : " + dateFormat.format(r.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(r.getCheckOutDate()));
+    			System.out.println("----------------------------------------");
+    		}
+    	}
+    	
     	
     }
 	
