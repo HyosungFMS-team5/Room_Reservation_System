@@ -4,40 +4,42 @@ import java.util.Map;
 import java.util.Scanner;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class UserSystem {
 	private Scanner sc;
 	private FileIO fileIO;
-	private boolean loggedIn;
+	private UserInputer userInputer;
 	private User user;
 	private String userId;
+	private Map<String, User> userMap;
+	private boolean loggedIn;
 	
 	public UserSystem(Scanner sc, FileIO fileIO) {
 		this.sc = sc;
 		this.fileIO = fileIO;
+		this.userMap = fileIO.userLoad();
 	}
 	
 	// 실행 함수
 	public void run() {
 		while(true) {
+			System.out.println("---------------------------------------");
 			System.out.println("1. 회원가입 | 2. 로그인 | 3. 뒤로 가기");
 			String choice = sc.nextLine();
 			
 			switch (choice) {
-			case "1":
-				signUp();
-				break;
-			case "2":
-				login();
-				if (!loggedIn) break;
-			case "3":
-				return;
-			default:
-				System.out.println("잘못된 입력입니다.");
-				break;
+				case "1":
+					signUp();
+					break;
+				case "2":
+					login();
+					if (!loggedIn) break;
+				case "3":
+					return;
+				default:
+					System.out.println("잘못된 입력입니다.");
+					break;
 			}
 		}
 		
@@ -46,35 +48,47 @@ public class UserSystem {
 	// 로그인
 	public void login() {
 		// 추가기능 - 로그인 시도 횟수 제한
-		System.out.print("아이디 입력 : ");
-		String inputID = sc.nextLine();
-		System.out.print("비밀번호 입력 : ");
-		String inputPW = sc.nextLine();
+		// 아이디 입력
+		userInputer = new UserInputerLoginID(sc, "아이디를 입력해주세요", "0", "로그인", userMap);
+		String inputID = userInputer.validatedInput();
+		if (inputID == null) return;
+
+		// 비밀번호 입력
+		userInputer = new UserInputerLoginPW(sc, "비밀번호 입력해주세요", "0", "로그인");
+		String inputPW = userInputer.validatedInput(userMap.get(inputID).getUserPW());
+		if (inputPW == null) return;
 		
-		Map<String, User> userData = fileIO.userLoad();
-		if (!userData.containsKey(inputID)) {
-			System.out.println("존재하지 않는 ID입니다.");
-		} else if (!inputPW.equals(userData.get(inputID).getUserPW())) {
-			System.out.println("비밀번호가 일치하지 않습니다.");
-		} else {
-			System.out.println("로그인에 성공하였습니다.");
-			loggedIn = true;
-			this.userId = inputID;
-		}
+		// 유저 정보 입력
+		loggedIn = true;
+		this.userId = inputID;  // 얘는 날리는 게 나을 수도??
+		this.user = userMap.get(inputID);
+
+		System.out.println("로그인에 성공하였습니다.");
 	}
 	
 	// 회원가입
 	public void signUp() {
 		System.out.println("회원가입을 진행합니다.");
-		System.out.print("아이디 입력 : ");
-		String inputID = sc.nextLine();
-		// 아이디 중복 로직 추가 요망
-		System.out.print("비밀번호 입력 : ");
-		String inputPW = sc.nextLine();
-		// 비밀번호 확인 로직 추가 요망
-		// 휴대폰 번호 입력 로직 추가 요망
-		fileIO.userSave(new User(inputID, inputPW, ""));
+		// 아이디 입력
+		userInputer = new UserInputerSignupID(sc, "아이디를 입력해주세요", "0", "회원가입", userMap);
+		String inputID = userInputer.validatedInput();
+		if (inputID == null) return;
+
+		// 비밀번호 입력
+		userInputer = new UserInputerSignupPW(sc, "비밀번호 입력해주세요", "0", "회원가입");
+		String inputPW = userInputer.validatedInput();
+		if (inputPW == null) return;
+
+		// 전화번호 입력
+		userInputer = new UserInputerSignupPhone(sc, "휴대전화 번호 입력해주세요.(OOO-OOOO-OOOO)", "0", "회원가입");
+		String inputPhone = userInputer.validatedInput();
+		if (inputPhone == null) return;
+
+		// 유저정보 저장
+		User user = new User(inputID, inputPW, inputPhone);
+		fileIO.userSave(user);
+		userMap.put(user.getUserID(), user);
+
+		System.out.println("회원 가입을 완료하였습니다!");
 	}
-	
-	
 }
