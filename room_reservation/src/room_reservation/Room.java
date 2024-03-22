@@ -15,6 +15,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public abstract class Room implements Serializable {
+	// AdminSystem 방 정보 수정에서 (직렬화된 객체를 역직렬화할 때)클래스 버전 일치하지 않는 문제 발생으로 인한 버전 맞춰주는 코드
+	private static final long serialVersionUID = 5332156671298028215L;
+
 	private String roomId; 
 	private String roomName;
 	private int capacity;

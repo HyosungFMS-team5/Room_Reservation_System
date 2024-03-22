@@ -115,7 +115,7 @@ public class FileIO {
 	}
 	
 	// 관리자 방 추가시 방 데이터 저장
-	public void roomSave(Room room) {
+	public void roomSave( Map<String, Room> roomMap) {
 		File file  = new File("RoomData.txt");
 
 		FileOutputStream fos = null;
@@ -124,13 +124,13 @@ public class FileIO {
 		
 		try {
 			// 입출력 관렬 객체 초기화
-			boolean fileExist = file.exists() && file.length() > 0;
-			fos = new FileOutputStream(file, true);
-			bos = new BufferedOutputStream(fos);
-			out = fileExist ? new AppendableObjectOutputStream(bos) : new ObjectOutputStream(bos);  // 직렬화 지원 객체
+//			boolean fileExist = file.exists() && file.length() > 0;
+//			fos = new FileOutputStream(file, true);
+//			bos = new BufferedOutputStream(fos);
+//			out = fileExist ? new AppendableObjectOutputStream(bos) : new ObjectOutputStream(bos);  // 직렬화 지원 객체
 			
 			// 직렬화
-			out.writeObject(room);
+			out.writeObject(roomMap);
 
 		} catch(Exception e) {
 			// 예외 처리 - 나중에
@@ -181,7 +181,9 @@ public class FileIO {
 			System.out.println("오류가 발생하였습니다");
 		}finally {
 			try {
-				ois.close();
+				if(ois != null) {
+					ois.close();
+				};
 				bis.close();
 				fis.close();
 			} catch (Exception e2) {
@@ -270,45 +272,82 @@ public class FileIO {
 		return reservationList;
 	}
 	
-	// 방 정보 수정 -> 파일 저장 >>>>>>>>>>>>RoomSave는 하나씩 저장되는데, 방 정보 수정이 한꺼번에 이루어질 수 있으므로 만듦
-	public void roomInfoChangeSave(Map<String, Room> roomMap) {
-	    File file = new File("RoomData.txt");
-	    try {
-	    	FileOutputStream fos = new FileOutputStream(file, false); // false로 설정하여 파일 내용을 덮어쓰기
-	         BufferedOutputStream bos = new BufferedOutputStream(fos);
-	         ObjectOutputStream oos = new ObjectOutputStream(bos);
-	         
-	        for (Room room : roomMap.values()) {
-	            oos.writeObject(room); 
-	        }
-	        System.out.println("수정한 방 정보를 모두 저장했습니다.");
-	        
-	    } catch (IOException e) {
-	        System.out.println("오류가 발생하였습니다.");
-	        e.printStackTrace();
-	    }
-	}
-
-	
-
-	
-	// 방 정보 삭제 ->  파일 저장 
-	public void deleteRoomSaveFile(Map<String, Room> roomMap) {
-	    File file = new File("RoomData.txt");
-
-	    try{
-	    	FileOutputStream fos = new FileOutputStream(file);
-	         BufferedOutputStream bos = new BufferedOutputStream(fos);
-	         ObjectOutputStream oos = new ObjectOutputStream(bos);
-
-	        for(Room room : roomMap.values()) {
-	            oos.writeObject(room);
-	        }
-	        System.out.println("삭제한 방 정보가 반영되었습니다.");
-	    } catch(Exception e) {
-	        System.out.println("오류가 발생하였습니다.");
-	        e.printStackTrace();
-	    }
-	}
-	
+//	// 방 정보 수정 -> 파일 저장 >>>>>>>>>>>>RoomSave는 하나씩 저장되는데, 방 정보 수정이 한꺼번에 이루어질 수 있으므로 만듦
+//	public void roomInfoChangeSave(Map<String, Room> roomMap) {
+//	    File file = new File("RoomData.txt");
+//	    try {
+//	    	FileOutputStream fos = new FileOutputStream(file, false); // false로 설정하여 파일 내용을 덮어쓰기
+//	         BufferedOutputStream bos = new BufferedOutputStream(fos);
+//	         ObjectOutputStream oos = new ObjectOutputStream(bos);
+//	         
+//	        for (Room room : roomMap.values()) {
+//	            oos.writeObject(room); 
+//	        }
+//	        System.out.println("수정한 방 정보를 모두 저장했습니다.");
+//	        
+//	    } catch (IOException e) {
+//	        System.out.println("오류가 발생하였습니다.");
+//	        e.printStackTrace();
+//	    }
+//	}
+//
+//	
+//
+//	
+//	// 방 정보 삭제 -> 파일 저장
+//	public void deleteRoomSaveFile(Map<String, Room> roomMap) {
+//	    File file = new File("RoomData.txt"); // 파일명 확인
+//
+//	    try {
+//	        FileOutputStream fos = new FileOutputStream(file, false); // 파일을 덮어쓰기 모드로 열기
+//	        BufferedOutputStream bos = new BufferedOutputStream(fos);
+//	        ObjectOutputStream oos = new ObjectOutputStream(bos);
+//
+//	        for (Room room : roomMap.values()) {
+//	            oos.writeObject(room);
+//	        }
+//	        oos.close(); // 자원 해제
+//	        System.out.println("삭제한 방 정보가 반영되었습니다.");
+//	    } catch (IOException e) {
+//	        System.out.println("오류가 발생하였습니다.");
+//	        e.printStackTrace();
+//	    }
+//	}
+//
+//	
+//	// 파일 정보 수정한거 다시 저장
+//	public class RoomInfoLoader {
+//
+//	    public Map<String, Room> roomLoad() {
+//	        File file = new File("RoomData.txt");
+//	        Map<String, Room> roomMap = new HashMap<>();
+//
+//	        try {
+//	            FileInputStream fis = new FileInputStream(file);
+//	            BufferedInputStream bis = new BufferedInputStream(fis);
+//	            ObjectInputStream ois = new ObjectInputStream(bis);
+//
+//	            while (true) {
+//	                try {
+//	                    Room room = (Room) ois.readObject();
+//	                    roomMap.put(room.getRoomId(), room);
+//	                } catch (EOFException e) {
+//	                    // 파일의 끝
+//	                    break;
+//	                } catch (ClassNotFoundException e) {
+//	                    e.printStackTrace();
+//	                }
+//	            }
+//	            ois.close();
+//	        } catch (FileNotFoundException e) {
+//	            System.out.println("파일을 찾을 수 없습니다.");
+//	            e.printStackTrace();
+//	        } catch (IOException e) {
+//	            System.out.println("파일 읽기 오류가 발생하였습니다.");
+//	            e.printStackTrace();
+//	        }
+//
+//	        return roomMap;
+//	    }
+//	}
 }
