@@ -270,13 +270,36 @@ public class FileIO {
 		return reservationList;
 	}
 	
+	// 방 정보 수정 -> 파일 저장 >>>>>>>>>>>>RoomSave는 하나씩 저장되는데, 방 정보 수정이 한꺼번에 이루어질 수 있으므로 만듦
+	public void roomInfoChangeSave(Map<String, Room> roomMap) {
+	    File file = new File("RoomData.txt");
+	    try {
+	    	FileOutputStream fos = new FileOutputStream(file, false); // false로 설정하여 파일 내용을 덮어쓰기
+	         BufferedOutputStream bos = new BufferedOutputStream(fos);
+	         ObjectOutputStream oos = new ObjectOutputStream(bos);
+	         
+	        for (Room room : roomMap.values()) {
+	            oos.writeObject(room); 
+	        }
+	        System.out.println("수정한 방 정보를 모두 저장했습니다.");
+	        
+	    } catch (IOException e) {
+	        System.out.println("오류가 발생하였습니다.");
+	        e.printStackTrace();
+	    }
+	}
+
+	
+
+	
 	// 방 정보 삭제 ->  파일 저장 
 	public void deleteRoomSaveFile(Map<String, Room> roomMap) {
 	    File file = new File("RoomData.txt");
 
-	    try (FileOutputStream fos = new FileOutputStream(file);
+	    try{
+	    	FileOutputStream fos = new FileOutputStream(file);
 	         BufferedOutputStream bos = new BufferedOutputStream(fos);
-	         ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+	         ObjectOutputStream oos = new ObjectOutputStream(bos);
 
 	        for(Room room : roomMap.values()) {
 	            oos.writeObject(room);
