@@ -243,7 +243,7 @@ public class FileIO {
 			bis = new BufferedInputStream(fis);
 			ois = new ObjectInputStream(bis);
 			
-			ArrayList<Reservation> storedList = (ArrayList<Reservation>) ois.readObject();
+			List<Reservation> storedList = (List<Reservation>) ois.readObject();
             reservationList.addAll(storedList);
 			
 		} catch (FileNotFoundException e) {  // 잘못된 경로
