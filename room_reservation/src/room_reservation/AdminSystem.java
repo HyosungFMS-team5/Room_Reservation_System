@@ -70,6 +70,7 @@ public class AdminSystem {
 	
 	// 방 추가
 	private void addRoom() {
+		Map<String, Room> roomMap = fileIO.roomLoad();
 		// 얘는 자동 생성으로 바꿔주세요
 		System.out.println("방ID를 입력해주세요");
 		String roomId = sc.nextLine();
@@ -102,8 +103,8 @@ public class AdminSystem {
 			}
 		}
 
-		
-		fileIO.roomSave(room);
+		roomMap.put(roomId, room);
+		fileIO.roomSave(roomMap);
 	}
 	
 	// 방 목록 조회

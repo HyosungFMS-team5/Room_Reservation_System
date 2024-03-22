@@ -115,7 +115,7 @@ public class FileIO {
 	}
 	
 	// 관리자 방 추가시 방 데이터 저장
-	public void roomSave(Room room) {
+	public void roomSave(Map<String, Room> roomMap) {
 		File file  = new File("RoomData.txt");
 
 		FileOutputStream fos = null;
@@ -124,13 +124,12 @@ public class FileIO {
 		
 		try {
 			// 입출력 관렬 객체 초기화
-			boolean fileExist = file.exists() && file.length() > 0;
-			fos = new FileOutputStream(file, true);
+			fos = new FileOutputStream(file);
 			bos = new BufferedOutputStream(fos);
-			out = fileExist ? new AppendableObjectOutputStream(bos) : new ObjectOutputStream(bos);  // 직렬화 지원 객체
+			out = new ObjectOutputStream(bos);  // 직렬화 지원 객체
 			
 			// 직렬화
-			out.writeObject(room);
+			out.writeObject(roomMap);
 
 		} catch(Exception e) {
 			// 예외 처리 - 나중에
@@ -164,10 +163,8 @@ public class FileIO {
 			bis = new BufferedInputStream(fis);
 			ois = new ObjectInputStream(bis);
 			
-			Room room = null;
-			while((room = (Room)ois.readObject()) != null) {
-				roomMap.put(room.getRoomId(), room);
-			}
+			Map<String, Room> storedMap = (Map<String, Room>) ois.readObject();
+			roomMap.putAll(storedMap);
 			
 		} catch (FileNotFoundException e) {  // 잘못된 경로
 			System.out.println("파일이 존재하지 않습니다");

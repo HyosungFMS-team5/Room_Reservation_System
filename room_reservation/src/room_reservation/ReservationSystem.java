@@ -133,7 +133,7 @@ public class ReservationSystem {
 		System.out.println("**************************************************");
 		System.out.println("==================================================");
 		System.out.println("0.뒤로가기");
-		// TODO: 리뷰 내역뽑혀야함
+		
 		String back = null;
 		while (back == null) {
 			back = sc.nextLine();
@@ -220,24 +220,37 @@ public class ReservationSystem {
 				if (yesOrNo.equalsIgnoreCase("y")) {
 					// booked에 date 키로 집어넣고 , reservation data 집어넣고 break
 					
-					// TODO: 이거 이렇게 넣으면 안될듯 , 데이터에 저장해줘야함 
 					Map<String, Room> roomMap = fileIO.roomLoad();
-					List<Room> temp = new ArrayList<>();
 					
 					for (Map.Entry<String, Room> e : roomMap.entrySet()) {
 						if (e.getKey().equals(pickRoom.getRoomId())) {
 							for (String date: dateList) {
 								e.getValue().getBookedDate().put(date, true);
 							}
-							temp.add(e.getValue());
-						} else {
-							temp.add(e.getValue());
-						}
 					}
+//					List<Room> temp = new ArrayList<>();
+//					
+//					for (Map.Entry<String, Room> e : roomMap.entrySet()) {
+//						if (e.getKey().equals(pickRoom.getRoomId())) {
+//							for (String date: dateList) {
+//								e.getValue().getBookedDate().put(date, true);
+//							}
+//							temp.add(e.getValue());
+//						} else {
+//							temp.add(e.getValue());
+//						}
+//					}
+//					
+//					for (Room room : temp) {
+//						fileIO.roomSave(room);
+//					}
 					
-					for (Room room : temp) {
-						fileIO.roomSave(room);
-					}
+					
+					
+					
+					
+					fileIO.roomSave(roomMap);
+					
 					
 					
 					System.out.println("정상적으로 예약되었습니다.");
@@ -255,7 +268,7 @@ public class ReservationSystem {
 					
 				} 
 			}
-		}
+		}}
 		
 		
 		
