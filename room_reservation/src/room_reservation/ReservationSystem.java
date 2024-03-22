@@ -2,9 +2,13 @@ package room_reservation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -13,12 +17,20 @@ public class ReservationSystem {
 	private Scanner sc;
 	private FileIO fileIO;
 	private UserSystem userSystem;
+	private Map<Integer, String> scoreMap;
 	
 	
 	public ReservationSystem(Scanner sc, FileIO fileIO, UserSystem userSystem) {
 		this.sc = sc;
 		this.fileIO = fileIO;
 		this.userSystem = userSystem;
+		this.scoreMap = Map.ofEntries(
+    		    Map.entry(1, "★"),
+    		    Map.entry(2, "★★"),
+    		    Map.entry(3, "★★★"),
+    		    Map.entry(4, "★★★★"),
+    		    Map.entry(5, "★★★★★")
+    		);
 	}
 	
 
@@ -26,7 +38,7 @@ public class ReservationSystem {
 	public void run() {
 		
 		while (true) {
-			System.out.println("1. 펜션 목록 보기 | 2. 펜션 예약하기 | 3.나의 예약 내역 | 4. 리뷰 작성하기 | 5. 뒤로가기 ");
+			System.out.println("1. 펜션 목록 보기 | 2. 펜션 예약하기 | 3.나의 예약 내역 | 4. 리뷰 작성하기 | 5. 내 리뷰 보기 | 6. 뒤로가기 ");
 			String choice = sc.nextLine();
 			switch (choice) {
 			case "1": {
@@ -42,9 +54,14 @@ public class ReservationSystem {
 				break;
 			}
 			case "4": {
+				checkCanReview();
 				break;
 			}
 			case "5": {
+				showAllReviewOfMine();
+				break;
+			}
+			case "6": {
 				return;
 			}
 			default:
@@ -81,12 +98,40 @@ public class ReservationSystem {
 	
 	// 방 상세 조회 
 	private void showRoomDetail(Room room) {
+		List<Review> reviewList = fileIO.reviewLoad();
+		List<Review> sameRoomIdReviewList = new ArrayList<>();
+		
+		for (Review review : reviewList) {
+			if (review.getRoomId().equals(room.getRoomId())) {
+				sameRoomIdReviewList.add(review);
+			}
+		}
+		
 		System.out.println(room.getRoomId() + "번 방 상세 내역");
-		System.out.println("===========================================");
+		System.out.println("==================================================");
 		System.out.println("방 이름 : " + room.getRoomName());
 		System.out.println("최대 수용인원 : " + room.getCapacity());
 		System.out.println("방 상세 설명 : " + room.getDescription());
-		System.out.println("===========================================");
+		System.out.println();
+		System.out.println("******************** 후기(" + sameRoomIdReviewList.size() + ") **********************"  );
+		
+		if (sameRoomIdReviewList.size() == 0) {
+			System.out.println();
+    		System.out.println("         아직 작성된 후기가 없습니다.        ");
+    		System.out.println();
+		} else {
+			for (Review review: sameRoomIdReviewList) {
+    			System.out.println();
+    			System.out.println(review.getRoomId() + "번 방");
+    			System.out.println(userSystem.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getScore()) );
+    			System.out.println("후기 : " + review.getContent());
+    			System.out.println();
+    			System.out.println("----------------------------------------");
+    	}
+		}
+		
+		System.out.println("**************************************************");
+		System.out.println("==================================================");
 		System.out.println("0.뒤로가기");
 		// TODO: 리뷰 내역뽑혀야함
 		String back = null;
@@ -270,10 +315,11 @@ public class ReservationSystem {
     	List<Reservation> reservationList = fileIO.reservationLoad();
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
-    	for (Reservation r : reservationList) {
-    		if (r.getUserId().equals(userSystem.getUserId())) {
-    			System.out.println("예약자 : " + r.getUserId() + "| 방번호 : " + r.getRoomId() + " | 숙박인원 : " + r.getPersonCnt());
-    			System.out.println("체크인 : " + dateFormat.format(r.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(r.getCheckOutDate()));
+    	for (Reservation reservation : reservationList) {
+    		if (reservation.getUserId().equals(userSystem.getUserId())) {
+    			System.out.println("예약자 : " + reservation.getUserId() + "| 방번호 : " + reservation.getRoomId() + " | 숙박인원 : " + reservation.getPersonCnt());
+    			System.out.println("체크인 : " + dateFormat.format(reservation.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getCheckOutDate()));
+    			System.out.println("리뷰 작성 여부 :" + reservation.isReviewed() );
     			System.out.println("----------------------------------------");
     		}
     	}
@@ -281,4 +327,141 @@ public class ReservationSystem {
     	
     }
 	
+    
+    // 리뷰 작성가능한 예약 내역 판별
+    public void checkCanReview() {
+    	List<Reservation> reservationList = fileIO.reservationLoad();
+    	LocalDate currentDate = LocalDate.now();
+    	List<Reservation> canWriteReviewReservation = new ArrayList<>(); 
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    	
+    	for (Reservation reservation : reservationList) {
+    		if (reservation.getUserId().equals(userSystem.getUserId())) {
+    			
+    			Date checkOutDate = reservation.getCheckOutDate();
+                LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                
+                if (!reservation.isReviewed() && localCheckOutDate.isBefore(currentDate)) {
+                	canWriteReviewReservation.add(reservation);
+                }
+    		}
+    	}
+    	
+    	
+    	System.out.println("=======================리뷰 작성 가능(" + canWriteReviewReservation.size() +")===================");
+    	if (canWriteReviewReservation.size() == 0) {
+    		System.out.println();
+    		System.out.println("         리뷰 작성할 수 있는 예약내역이 없습니다.        ");
+    		System.out.println();
+    		System.out.println("==================================================");
+    	
+    	} else {
+    		System.out.println();
+    		for (Reservation reservation : canWriteReviewReservation) {
+        			System.out.println("방번호 : " + reservation.getRoomId() + " | 숙박인원 : " + reservation.getPersonCnt());
+        			System.out.println("체크인 : " + dateFormat.format(reservation.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getCheckOutDate()));
+        			
+        			System.out.println("----------------------------------------");
+        	}
+    	}
+    	
+    	while (true) {
+    		System.out.println("리뷰를 작성할 방 번호를 입력하세요. | 0. 뒤로가기");
+    		String inputRoomId = sc.nextLine();
+    		
+    		if (inputRoomId.equals("0")) return ;
+    		
+    		boolean isInputRoomIdValid = false;
+    		for (Reservation reservation : canWriteReviewReservation) {
+    			if (reservation.getRoomId().equals(inputRoomId)) {
+    				isInputRoomIdValid = true;
+    				break;
+    			}
+    		}
+    		
+    		if (!isInputRoomIdValid) {
+    			System.out.println("해당하는 방 번호가 없습니다. ");
+    		} else {
+    			writeReview(inputRoomId);
+    			return;
+    		}
+    		
+    	}
+    	
+    	
+    }
+    
+    
+    // 리뷰 작성
+    private void writeReview(String roomId) {
+    	List<Review> reviewList = fileIO.reviewLoad();
+
+    	while (true) {
+    		
+    		System.out.println("=========================================");
+    		System.out.println("별점 (1 - 5) : ");
+    		int inputScore = Integer.parseInt(sc.nextLine());
+    		System.out.println("후기를 남겨주세요 : ");
+    		String inputReviewDetail = sc.nextLine();
+    		System.out.println("=========================================");
+    		System.out.println(roomId + "번 방 리뷰");
+    		System.out.println("점수 : " + scoreMap.get(inputScore) );
+    		System.out.println("후기 : " + inputReviewDetail);
+    		System.out.println("====================================");
+    		System.out.println("이대로 남기시겠습니까? (y/n) | 0. 뒤로가기 ");
+    		String yesOrNo = sc.nextLine();
+    		
+    		if (yesOrNo.equals("0")) return ;
+    		
+    		if (yesOrNo.equalsIgnoreCase("y")) {
+    			reviewList.add(new Review(userSystem.getUserId(), roomId, inputScore, inputReviewDetail));
+    			fileIO.reviewSave(reviewList);
+    			
+    			// 리뷰를 남긴 reservation 이니까 isReviewed true로! 
+    			
+    			List<Reservation> reservationList = fileIO.reservationLoad();
+    			List<Reservation> tempReservationList = new ArrayList<>();
+    			
+    			for (Reservation reservation: reservationList) {
+    				if (reservation.getRoomId().equals(roomId)) {
+    					reservation.setReviewed(true);
+    				}
+    				tempReservationList.add(reservation);
+    			}
+    			
+    			fileIO.reservationSave(tempReservationList);
+    			
+    			System.out.println("리뷰가 정상적으로 작성되었습니다.");
+    			break;
+    		}
+    		
+    		
+    	}
+    }
+    
+    
+    // 내 리뷰 보기
+    
+    public void showAllReviewOfMine() {
+    	List<Review> reviewList = fileIO.reviewLoad();
+    	
+    	System.out.println("=======================내가 작성한 리뷰(" + reviewList.size() +")===================");
+    	if (reviewList.size() == 0) {
+    		System.out.println();
+    		System.out.println("         아직 작성한 리뷰가 없습니다...        ");
+    		System.out.println();
+    		System.out.println("==================================================");
+    	
+    	} else {
+    		System.out.println();
+    		for (Review review: reviewList) {
+        			System.out.println();
+        			System.out.println(review.getRoomId() + "번 방");
+        			System.out.println(userSystem.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getScore()) );
+        			System.out.println("후기 : " + review.getContent());
+        			System.out.println("----------------------------------------");
+        	}
+    	}
+    	
+    }
 }

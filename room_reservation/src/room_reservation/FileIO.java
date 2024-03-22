@@ -274,4 +274,83 @@ public class FileIO {
 	}
 
 	
+	// 리뷰내역 저장 
+	public void reviewSave(List<Review> reviewList) {
+		File file  = new File("ReviewData.txt");
+
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		ObjectOutputStream out = null;
+		
+		try {
+			// 입출력 관렬 객체 초기화
+			fos = new FileOutputStream(file);
+			bos = new BufferedOutputStream(fos);
+			out = new ObjectOutputStream(bos);  // 직렬화 지원 객체
+			
+			// 직렬화
+			out.writeObject(reviewList);
+
+		} catch(Exception e) {
+			// 예외 처리 - 나중에
+			e.printStackTrace();
+		} finally {
+			// 파일 종료
+			try {
+				out.close();
+				bos.close();
+				fos.close();
+			} catch (Exception e) {
+				// 나중에
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	// 리뷰 불러오기
+
+	public List<Review> reviewLoad() {
+		List<Review> reviewList = new ArrayList<>();
+		
+		String filename = "ReviewData.txt";
+		
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		ObjectInputStream ois = null;
+		
+		try {
+			fis = new FileInputStream(filename);
+			bis = new BufferedInputStream(fis);
+			ois = new ObjectInputStream(bis);
+			
+			List<Review> storedList = (List<Review>) ois.readObject();
+			reviewList.addAll(storedList);
+			
+		} catch (FileNotFoundException e) {  // 잘못된 경로
+			System.out.println("파일이 존재하지 않습니다");
+		} catch (EOFException e) {  // 파일의 끝
+		} catch (IOException e) {  // 입출력 에러
+			e.printStackTrace();
+			System.out.println("파일을 읽을 수 없습니다");
+		} catch (ClassNotFoundException e) {  // 클래스 에러
+			System.out.println("잘못된 객체입니다");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("오류가 발생하였습니다");
+		}finally {
+			try {
+				if (ois != null)
+                    ois.close();
+                if (bis != null)
+                    bis.close();
+                if (fis != null)
+                    fis.close();
+			} catch (Exception e2) {
+				System.out.println(e2.getMessage());
+			}
+		}
+
+		return reviewList;
+	}
 }
