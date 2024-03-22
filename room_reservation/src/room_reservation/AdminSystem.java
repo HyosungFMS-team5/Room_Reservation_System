@@ -29,7 +29,7 @@ public class AdminSystem {
 	// 메뉴 보여주기
 	private void showMenu() {
 		while(true) {
-			System.out.println("1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 정보 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | 0. 뒤로 가기");
+			System.out.println("1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | 0. 뒤로 가기");
 			String choice = sc.nextLine();
 			switch (choice) {
 			case "1":
@@ -39,16 +39,16 @@ public class AdminSystem {
 				addRoom();
 				break;
 			case "3":
-				
+				roomInfoChange();
 				break;
 			case "4":
-				
+				deleteRoomInfo();
 				break;
 			case "5":
-				
+				showReservation();
 				break;
 			case "6":
-				
+				cancelReservation();
 				break;
 			case "0":
 				return;
@@ -58,6 +58,125 @@ public class AdminSystem {
 			}
 		}
 
+	}
+	
+	// 방 세부 정보 수정
+	private void roomDetailInfoChange(Room room) {
+		System.out.println("수정할 사항 1. 최대 수용 인원 2. 방 상세 설명  3. 뒤로가기");
+		String detailType = sc.nextLine();
+		switch (detailType) {
+		
+		case "1": {
+			System.out.println("변경 최대 수용 인원을 입력해주세요.");
+			int changeCapacity = Integer.parseInt(sc.nextLine());
+			room.setCapacity(changeCapacity);
+			break;
+
+		}
+		case "2": {
+			System.out.println("수정할 방 상세 설명에 대해 말해주세요.");
+			String description = sc.nextLine();
+			room.setDescription(description);
+				}
+		case "3": {
+			return;
+		}
+		default:
+			System.out.println("잘못된 입력입니다.");
+			break;
+		}
+	}
+	
+	// 방 정보 수정
+	private void roomInfoChange() {
+	
+		System.out.println("수정할 방 타입을 선택해주세요");
+		System.out.println("1. TentRoom 2. CampingCarRoom");
+		
+		Map<String, Room> roomMap = fileIO.roomLoad();
+		FileIO fileIO = new FileIO();
+		
+		// 방 타입 선택 roomType으로 받음
+		String roomType = sc.nextLine();
+		
+		// 각 방을 순회하며 타입에 맞는 방의 세부 정보 수정
+        for (Room room : roomMap.values()) {
+            switch (roomType) {
+                case "1":
+                    if (room instanceof TentRoom) {
+                        roomDetailInfoChange(room); // 세부 정보 수정 메서드 호출
+                        fileIO.roomInfoChangeSave(roomMap); // 파일에 수정한 정보들 덮어써서 저장
+                    }
+                    break;
+                case "2":
+                    if (room instanceof CampingCarRoom) {
+                        roomDetailInfoChange(room); // 세부 정보 수정 메서드 호출
+                        fileIO.roomInfoChangeSave(roomMap); // 파일에 수정한 정보들 덮어써서 저장
+                    }
+                    break;
+                default:
+                    System.out.println("잘못된 입력입니다.");
+                    return;
+            }
+        }
+}
+
+	// 삭제할 방 ID를 토대로 삭제하기
+	private void deleteroomId(Map<String, Room> roomMap) {
+		FileIO fileio = new FileIO();
+
+		System.out.println("삭제할 룸 ID를 알려주세요.");
+		String roomId = sc.nextLine();
+		
+		if(roomMap.containsKey(roomId)) {
+			roomMap.remove(roomId);
+			System.out.println("방 정보가 성공적으로 삭제되었습니다.");
+			// 삭제한 것 파일에 반영 
+			fileio.deleteRoomSaveFile(roomMap);
+		}
+		else {
+			System.out.println("해당하는 방 정보가 없습니다.");
+		}
+		return;
+	}
+	
+	// 방 정보 삭제
+	private void deleteRoomInfo() {
+		System.out.println("삭제할 방 타입을 선택해주세요");
+		System.out.println("1. TentRoom 2. CampingCarRoom");
+		
+		// 삭제할 방 타입
+		String roomType = sc.nextLine();
+		
+		Map<String, Room> roomMap = fileIO.roomLoad();
+		
+		switch (roomType) {
+		case "1": {
+			System.out.println("TentRoom 타입에 대한 삭제가 이루어집니다.");
+			deleteroomId(roomMap);
+
+		}
+		case "2": {
+			System.out.println("CampingCarRoom 타입에 대한 삭제가 이루어집니다.");
+			deleteroomId(roomMap);
+		}
+		default:
+			System.out.println("잘못된 입력입니다.");
+			break;
+		}
+
+	}
+	
+
+
+	// 예약 내역 조회
+	private void showReservation() {
+		
+	}
+	
+	// 예약 취소
+	private void cancelReservation() {
+		
 	}
 	
 	// 관리자 로그인

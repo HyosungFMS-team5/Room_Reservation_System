@@ -270,5 +270,22 @@ public class FileIO {
 		return reservationList;
 	}
 	
+	// 방 정보 삭제 ->  파일 저장 
+	public void deleteRoomSaveFile(Map<String, Room> roomMap) {
+	    File file = new File("RoomData.txt");
+
+	    try (FileOutputStream fos = new FileOutputStream(file);
+	         BufferedOutputStream bos = new BufferedOutputStream(fos);
+	         ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+
+	        for(Room room : roomMap.values()) {
+	            oos.writeObject(room);
+	        }
+	        System.out.println("삭제한 방 정보가 반영되었습니다.");
+	    } catch(Exception e) {
+	        System.out.println("오류가 발생하였습니다.");
+	        e.printStackTrace();
+	    }
+	}
 	
 }

@@ -36,6 +36,7 @@ public class Menu {
 			
 			switch (choice) {
 			case "1": isUser = false;
+				System.out.println("..");
 				return;
 			case "2": isUser = true;
 				return;
