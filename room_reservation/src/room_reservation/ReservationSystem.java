@@ -53,6 +53,7 @@ public class ReservationSystem {
 				showMyReservation();
 				break;
 			}
+			
 			case "4": {
 				checkCanReview();
 				break;
@@ -227,27 +228,11 @@ public class ReservationSystem {
 							for (String date: dateList) {
 								e.getValue().getBookedDate().put(date, true);
 							}
+							break;
+						}
+
 					}
-//					List<Room> temp = new ArrayList<>();
-//					
-//					for (Map.Entry<String, Room> e : roomMap.entrySet()) {
-//						if (e.getKey().equals(pickRoom.getRoomId())) {
-//							for (String date: dateList) {
-//								e.getValue().getBookedDate().put(date, true);
-//							}
-//							temp.add(e.getValue());
-//						} else {
-//							temp.add(e.getValue());
-//						}
-//					}
-//					
-//					for (Room room : temp) {
-//						fileIO.roomSave(room);
-//					}
-					
-					
-					
-					
+
 					
 					fileIO.roomSave(roomMap);
 					
@@ -260,11 +245,13 @@ public class ReservationSystem {
 														pickRoom.getRoomId(), 
 														checkInDate,
 														checkOutDate,
-														checkInPerson));
+														checkInPerson,
+														dateList));
 					
 					fileIO.reservationSave(reservationList);
-				
-					break;
+					
+					return;
+
 					
 				} 
 			}
@@ -272,7 +259,7 @@ public class ReservationSystem {
 		
 		
 		
-	}
+//	}
 	
 	// 예약 가능한 방 체크
 	
@@ -330,16 +317,77 @@ public class ReservationSystem {
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
     	for (Reservation reservation : reservationList) {
     		if (reservation.getUserId().equals(userSystem.getUserId())) {
+    			System.out.println("예약번호 : " + reservation.getReservationId());
+    			System.out.println();
     			System.out.println("예약자 : " + reservation.getUserId() + "| 방번호 : " + reservation.getRoomId() + " | 숙박인원 : " + reservation.getPersonCnt());
     			System.out.println("체크인 : " + dateFormat.format(reservation.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getCheckOutDate()));
     			System.out.println("리뷰 작성 여부 :" + reservation.isReviewed() );
     			System.out.println("----------------------------------------");
     		}
     	}
-    	
+    	// 예약취소
+    	while (true) {
+    		System.out.println("1. 예약 취소 | 0.뒤로가기");
+    		String choice = sc.nextLine();
+    		
+    		if (choice.equals("0")) return ;
+    		
+    		if (choice.equals("1")) {
+    			cancelReservation(reservationList);
+    			return;
+    		}
+    		
+    		System.out.println("잘못된 입력입니다.");
+    		
+    	}
     	
     }
 	
+    // 예약 취소
+    public void cancelReservation(List<Reservation> reservationList) {
+    	while (true) {
+    		System.out.println("취소를 원하는 예약번호를 입력해주세요. | 0. 뒤로가기");
+    		String inputReservationId = sc.nextLine();
+    		
+    		if (inputReservationId.equals("0")) return;
+    		
+    		List<Reservation> tempReservationList = new ArrayList<>();
+    		Reservation pickReservation = null;
+    		
+    		for (Reservation reservation : reservationList) {
+    			if (reservation.getReservationId().equals(inputReservationId)) {
+    				pickReservation = reservation;
+    				continue;
+    			}
+    			
+    			tempReservationList.add(reservation);
+    		}
+    		
+    		
+    		if (pickReservation == null) {
+    			System.out.println("해당하는 방 번호가 없습니다. ");
+    		} else {
+    			fileIO.reservationSave(tempReservationList);
+    			deleteBookedDate(pickReservation);
+    			System.out.println("예약이 정상적으로 취소되었습니다.");
+    			return;
+    		}
+    	}
+    	
+    }
+    
+    // 방의 bookedDate에서 취소 날짜 지우기
+    public void deleteBookedDate(Reservation reservation) {
+    	Map<String, Room> roomMap = fileIO.roomLoad();
+    	
+    	for (String date:reservation.getReserveDateList()) {
+    		roomMap.get(reservation.getRoomId()).getBookedDate().remove(date);
+    	}
+    	
+    	fileIO.roomSave(roomMap);
+    }
+    
+    
     
     // 리뷰 작성가능한 예약 내역 판별
     public void checkCanReview() {
