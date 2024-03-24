@@ -150,7 +150,9 @@ public class ReservationSystem {
 		int dateDiff = 0;
 		
 		while (true) {
+			
 			// TODO: LocalDate보다 이전의 값을 입력하면 커트해야함
+			// TODO: checkOutDate가 checkInDate보다 이전이면 커트 
 			if (checkInDate != null && checkOutDate != null && dateDiff > 0) break;
 		
 			System.out.println("원하는 체크인 날짜를 입력하세요 (형식: yyyy-MM-dd): ");
@@ -162,11 +164,34 @@ public class ReservationSystem {
 	        
 	        try {
 	        	checkInDate = dateFormat.parse(inputCheckInDate);
+	        	// 시연용 리뷰 남길 때 사이 주석
+	        	
+	        	LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        	
+	        	if (localCheckInDate.isBefore(LocalDate.now())) {
+	        		System.out.println(LocalDate.now() + " 이후의 날짜를 입력해주세요.");
+	        		continue;
+	        	}
+	      
+	        	//
 	        	checkOutDate = dateFormat.parse(inputCheckOutDate);
+	        	// 시연용 리뷰 남길때 사이 주석
+	        	LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        	if (localCheckOutDate.isBefore(LocalDate.now())) {
+	        		System.out.println(LocalDate.now() + " 이후의 날짜를 입력해주세요.");
+	        		continue;
+	        	}
+	        	if (localCheckOutDate.isBefore(localCheckInDate)) {
+	        		System.out.println(localCheckInDate + " 이후의 날짜를 입력해주세요.");
+	        		continue;
+	        	}
+	        	//
 	        	dateDiff = calcDateDiff(checkInDate,checkOutDate);
 	        } catch (ParseException e) {
 	            System.out.println("올바른 날짜 형식이 아닙니다.");
-	        } 
+	        } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage()); 
+            }
 		}
 		
 		int checkInPerson = 0;
