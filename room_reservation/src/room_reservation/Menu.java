@@ -2,6 +2,8 @@ package room_reservation;
 
 import java.util.Scanner;
 
+import console.print.ConsoleMethod;
+
 public class Menu {
 	private Scanner sc;
 	private FileIO fileIO;
@@ -31,7 +33,11 @@ public class Menu {
 	// 초기 메뉴 조회 - 관리자, 유저 선택
 	public void displayDefault() {
 		while (true) {
-			System.out.println("1. 관리자, 2. 유저");
+			ConsoleMethod.StartSystem1();
+			ConsoleMethod.StartSystem2();
+			System.out.println("|⠀⠀⠀⠀⡇⠀⠀1. 관리자 로그인⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⢕⠀⠀2. 사용자 로그인⠀ ⠀⡇⠀⠀⠀⠀|");
+			ConsoleMethod.StartSystem3();
+			
 			String choice = sc.nextLine();
 			
 			switch (choice) {
