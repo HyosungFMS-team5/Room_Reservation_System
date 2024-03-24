@@ -86,9 +86,21 @@ public class UserSystem {
 
 		// 유저정보 저장
 		User user = new User(inputID, inputPW, inputPhone);
-		fileIO.userSave(user);
 		userMap.put(user.getUserID(), user);
+		fileIO.userSave(userMap);
 
 		System.out.println("회원 가입을 완료하였습니다!");
+	}
+
+	public void updatePW() {
+
+	}
+
+	public void updatePhone() {
+
+	}
+
+	public void deleteInfo() {
+
 	}
 }

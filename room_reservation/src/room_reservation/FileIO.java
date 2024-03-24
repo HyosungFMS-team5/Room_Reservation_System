@@ -37,23 +37,21 @@ class AppendableObjectOutputStream extends ObjectOutputStream {
 public class FileIO {
 
 	// 회원가입시 유저 데이터 저장
-	public void userSave(User user) {
+	public void userSave(Map<String, User> userMap) {
 		File file  = new File("UserData.txt");
 
-		
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
 		ObjectOutputStream out = null;
 		
 		try {
 			// 입출력 관련 객체 초기화
-			boolean fileExist = file.exists() && file.length() > 0;
 			fos = new FileOutputStream(file, true);
 			bos = new BufferedOutputStream(fos);
-			out = fileExist ? new AppendableObjectOutputStream(bos) : new ObjectOutputStream(bos);  // 직렬화 지원 객체
+			out =  new ObjectOutputStream(bos);  // 직렬화 지원 객체
 			
 			// 직렬화
-			out.writeObject(user);
+			out.writeObject(userMap);
 
 		} catch(Exception e) {
 			// 예외 처리 - 나중에
@@ -73,23 +71,20 @@ public class FileIO {
 	
 	// 유저 데이터 불러오기
 	public Map<String, User> userLoad() {
-		Map<String, User> userMap = new HashMap<>();
+		Map<String, User> userMap = new HashMap<String, User>();
 		
-		String filename = "UserData.txt";
+		File file  = new File("UserData.txt");
 		
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		ObjectInputStream ois = null;
 		
 		try {
-			fis = new FileInputStream(filename);
+			fis = new FileInputStream(file);
 			bis = new BufferedInputStream(fis);
 			ois = new ObjectInputStream(bis);
-			
-			User user = null;
-			while((user = (User)ois.readObject()) != null) {
-				userMap.put(user.getUserID(), user);
-			}
+
+			if (file.exists()) userMap = (Map<String, User>)ois.readObject();
 			
 		} catch (FileNotFoundException e) {  // 잘못된 경로
 			System.out.println("파일이 존재하지 않습니다");
