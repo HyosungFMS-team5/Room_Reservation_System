@@ -46,7 +46,7 @@ public class FileIO {
 		
 		try {
 			// 입출력 관련 객체 초기화
-			fos = new FileOutputStream(file, true);
+			fos = new FileOutputStream(file);
 			bos = new BufferedOutputStream(fos);
 			out =  new ObjectOutputStream(bos);  // 직렬화 지원 객체
 			
