@@ -37,7 +37,7 @@ public class UserSystem {
 	private boolean showBeforLogin() {
 		boolean isEnd = false;
 
-		System.out.println("1. 로그인 | 2. 회원가입 | 0. 뒤로 가기");
+		System.out.println("1. 로그인 | 2. 회원가입 |"+ ConsoleMethod.FONT_PURPLE +" 0. 뒤로 가기" + ConsoleMethod.RESET);
 		System.out.println("---------------------------------------");
 
 		String choice = sc.nextLine();
@@ -99,7 +99,9 @@ public class UserSystem {
 	// 로그인
 	private void login() {
 		System.out.println(ConsoleMethod.BACKGROUND_BLUE + "********************로그인********************" + ConsoleMethod.RESET);
+
 		// 추가기능 - 로그인 시도 횟수 제한
+
 		// 아이디 입력
 		userInputer = new UserInputerLoginID(sc, "아이디를 입력해주세요", "0", "로그인", userMap);
 		String inputID = userInputer.validatedInput();
