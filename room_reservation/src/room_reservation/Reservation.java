@@ -22,8 +22,8 @@ public class Reservation implements Serializable{
 	private boolean isReviewed;
 	private List<String> reserveDateList;
 	
-	public Reservation(String userId, String roomId, Date checkInDate, Date checkOutDate, int personCnt, List<String> reserveDateList) {
-		this.reservationId = String.format("%04d", new Random().nextInt(10000));
+	public Reservation(String reservationId,String userId, String roomId, Date checkInDate, Date checkOutDate, int personCnt, List<String> reserveDateList) {
+		this.reservationId = reservationId;
 		this.userId = userId;
 		this.roomId = roomId;
 		this.checkInDate = checkInDate;

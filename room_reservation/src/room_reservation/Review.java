@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Review implements Serializable{
+	private String reservationId;
 	private String userId;
 	private String roomId;
 	private int score;
