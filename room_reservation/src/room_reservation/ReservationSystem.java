@@ -333,13 +333,19 @@ public class ReservationSystem {
 	// 나의 예약 내역
     public void showMyReservation() {
     	// TODO : resercationLoad => user의 MyreservationID 로 뽑기
-
+		Map<String, Reservation> reservationMap = fileIO.reservationLoad();
     	Map<String,Reservation> myReservationMap = userSystem.getUser().getMyReservationMap();  
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
-    	
+
     	for (Map.Entry<String, Reservation> reservation : myReservationMap.entrySet()) {
     		System.out.println("예약번호 : " + reservation.getKey());
+			
+			if(reservationMap.get(reservation.getKey()).isCanceled()){
+				System.out.println("관리자가 예약을 취소하였습니다. 다른 방을 예약해주세요.");
+				return;
+			}
+
 			System.out.println();
 			System.out.println("예약자 : " + reservation.getValue().getUserId() + "| 방번호 : " + reservation.getValue().getRoomId() + " | 숙박인원 : " + reservation.getValue().getPersonCnt());
 			System.out.println("체크인 : " + dateFormat.format(reservation.getValue().getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getValue().getCheckOutDate()));
