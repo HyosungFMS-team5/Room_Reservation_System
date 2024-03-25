@@ -60,5 +60,10 @@ public abstract class Room implements Serializable {
 		System.out.println("----------시설 이용 시 안내사항----------");
 		System.out.println("1. 바베큐 시설 이용 가능(이용시 50,000원 추가)");
 		System.out.println("2. 침구류 더 필요할 시 관리실에 문의");
-	};
+	}
+
+    public Room containsKey(String roomId2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'containsKey'");
+    };
 }
