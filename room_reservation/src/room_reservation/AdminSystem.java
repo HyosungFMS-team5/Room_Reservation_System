@@ -224,19 +224,15 @@ public class AdminSystem {
       Map<String, Reservation> reservationMap = fileIO.reservationLoad();
       
       for(Map.Entry<String, Reservation> entry : reservationMap.entrySet()) {
-         Reservation reservation = entry.getValue();
-         System.out.println("예약 ID: " + reservation.getReservationId() +
-                    ", 사용자 ID: " + reservation.getUserId() +
-                    ", 방 ID: " + reservation.getRoomId() +
-                    ", 체크인 날짜: " + reservation.getCheckInDate() +
-                    ", 체크아웃 날짜: " + reservation.getCheckOutDate() +
-                    ", 인원 수: " + reservation.getPersonCnt());
+         entry.getValue().showInfo();
       }
    }
 
    
     // 예약 취소
     public void cancelReservation() {
+      showReservation();
+
       Map<String, Reservation> reservationMap = fileIO.reservationLoad();
        
       while (true) {
@@ -246,13 +242,19 @@ public class AdminSystem {
          if (inputReservationId.equals("0")) return;
          
          if (reservationMap.containsKey(inputReservationId)) {
+            Reservation reservation = reservationMap.get(inputReservationId);
             // 날짜 지난 예약은 취소 불가
-            if (reservationMap.get(inputReservationId).getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
-               System.out.println("숙박 예정인 예약만 취소할 수 있습니다.");
-               return;
+            if (reservation.getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
+               System.out.println("숙박 예정인 예약만 취소할 수 있습니다. 다시 선택해주세요.");
+               continue;
             }
 
-            Reservation reservation = reservationMap.get(inputReservationId);
+            // 이미 취소 됐는지 확인
+            if (reservation.isCanceled()) {
+               System.out.println("이미 취소된 예약입니다. 다시 선택해주세요.");
+               continue;
+            }
+
             reservation.setCanceled(true);
 
             // User 클래스 내부 예약 내역 삭제

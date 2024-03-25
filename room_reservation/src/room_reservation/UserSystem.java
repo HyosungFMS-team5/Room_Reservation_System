@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import console.print.ConsoleMethod;
 import datecalc.util.DateCalc;
 import lombok.Getter;
 
@@ -97,7 +98,7 @@ public class UserSystem {
 	
 	// 로그인
 	private void login() {
-		System.out.println("********************로그인********************");
+		System.out.println(ConsoleMethod.BACKGROUND_BLUE + "********************로그인********************" + ConsoleMethod.RESET);
 		// 추가기능 - 로그인 시도 횟수 제한
 		// 아이디 입력
 		userInputer = new UserInputerLoginID(sc, "아이디를 입력해주세요", "0", "로그인", userMap);
@@ -200,7 +201,7 @@ public class UserSystem {
 			fileIO.userSave(userMap);
 			// 로그아웃
 			logout(); 
-			System.out.println("********************회원정보 삭제 완료********************");
+			System.out.println(ConsoleMethod.BACKGROUND_BLUE + "********************회원정보 삭제 완료********************" + ConsoleMethod.RESET);
 		} else {
 			System.out.println("********************회원정보 삭제 취소********************");
 		}
