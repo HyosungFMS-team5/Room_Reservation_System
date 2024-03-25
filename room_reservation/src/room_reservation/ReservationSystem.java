@@ -177,10 +177,7 @@ public class ReservationSystem {
 	        	checkOutDate = dateFormat.parse(inputCheckOutDate);
 	        	// 시연용 리뷰 남길때 사이 주석
 	        	LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	        	if (localCheckOutDate.isBefore(LocalDate.now())) {
-	        		System.out.println(LocalDate.now() + " 이후의 날짜를 입력해주세요.");
-	        		continue;
-	        	}
+
 	        	if (localCheckOutDate.isBefore(localCheckInDate)) {
 	        		System.out.println(localCheckInDate + " 이후의 날짜를 입력해주세요.");
 	        		continue;
