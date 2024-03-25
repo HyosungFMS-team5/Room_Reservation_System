@@ -1,7 +1,10 @@
 package console.print;
 
 public class ConsoleMethod {
-
+	public static final String RESET = "\u001B[0m";
+	public static final String FONT_RED = "\u001B[31m";
+	public static final String FONT_GREEN = "\u001B[32m";
+	
 	public static void StartSystem1() {
 		String asciiArt = """ 
 				-----------------------------------------------------------

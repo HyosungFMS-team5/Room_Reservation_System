@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.TreeSet;
+
+import console.print.ConsoleMethod;
+
 import java.text.NumberFormat;
 import datecalc.util.DateCalc;
 
@@ -58,7 +62,6 @@ public class ReservationSystem {
 				showMyReservation();
 				break;
 			}
-			
 			case "4": {
 				checkCanReview();
 				break;
@@ -81,13 +84,19 @@ public class ReservationSystem {
 	private void ShowAllRoom() {
 		Map<String, Room> roomMap = fileIO.roomLoad();
 		
+		TreeSet<String> sortedKeys = new TreeSet<>(roomMap.keySet());
+		
 		while (true) {
-			for (Map.Entry<String, Room> e : roomMap.entrySet()) {
-				// 출력형식 수정해주세요.
-				e.getValue().showRoomInfo();
-			}
+
+			System.out.println("**************** 예약 가능한 숙소(" + roomMap.size() +") ****************");
 			
-			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | 0. 뒤로가기");
+			for (String key : sortedKeys) {
+				System.out.println();
+	            roomMap.get(key).showRoomInfo();
+	        }
+			
+			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. |" + ConsoleMethod.FONT_RED + " 0. 뒤로가기" + ConsoleMethod.RESET);
+					
 			String inputRoomId = sc.nextLine();
 			
 			if (inputRoomId.equals("0")) return ;
@@ -230,18 +239,19 @@ public class ReservationSystem {
 			if (pickRoom == null) {
 				System.out.println("일치하는 방번호가 없습니다.");
 			} else {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				// 예약 정보 보여주기
 				System.out.println("====================================");
 				pickRoom.showRoomInfo();
 
 				System.out.println("숙박 인원 : " + checkInPerson + " / " + pickRoom.getCapacity());
-				System.out.println("체크인 날짜 : " + checkInDate);
-				System.out.println("체크아웃 날짜 : " + checkOutDate);
+				System.out.println("체크인 : " +  dateFormat.format(checkInDate) + " 15:00");
+				System.out.println("체크아웃 : " + dateFormat.format(checkOutDate) + " 11:00");
 
 				// 총 가격
 				int price = pickRoom.getTotalPrice(checkInPerson);
 				NumberFormat numberFormat = NumberFormat.getInstance();
-        String formattedNumber = numberFormat.format(price);
+				String formattedNumber = numberFormat.format(price);
 				System.out.printf("총 가격 : %s원\n", formattedNumber);
 				System.out.println();
 				// 주의 사항
@@ -343,7 +353,8 @@ public class ReservationSystem {
 			System.out.println();
 			System.out.println("예약자 : " + reservation.getValue().getUserId() + "| 방번호 : " + reservation.getValue().getRoomId() + " | 숙박인원 : " + reservation.getValue().getPersonCnt());
 			System.out.println("체크인 : " + dateFormat.format(reservation.getValue().getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getValue().getCheckOutDate()));
-			System.out.println("리뷰 작성 여부 :" + reservation.getValue().isReviewed() );
+			System.out.println("리뷰 작성 여부 : " + (reservation.getValue().isReviewed() ? "O" : "X"));
+			System.out.println("관리자 취소 여부 : " + reservation.getValue().isCanceled());
 			System.out.println("----------------------------------------");
     	}
 
