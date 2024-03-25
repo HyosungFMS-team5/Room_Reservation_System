@@ -18,11 +18,12 @@ public class Reservation implements Serializable{
 	private Date checkInDate;
 	private Date checkOutDate;
 	private int personCnt;
+	private int price;
 	private boolean isCanceled;
 	private boolean isReviewed;
 	private List<String> reserveDateList;
 	
-	public Reservation(String reservationId,String userId, String roomId, Date checkInDate, Date checkOutDate, int personCnt, List<String> reserveDateList) {
+	public Reservation(String reservationId,String userId, String roomId, Date checkInDate, Date checkOutDate, int personCnt, int price, List<String> reserveDateList) {
 		this.reservationId = reservationId;
 		this.userId = userId;
 		this.roomId = roomId;
@@ -31,6 +32,7 @@ public class Reservation implements Serializable{
 		this.personCnt = personCnt;
 		this.isCanceled = false;
 		this.isReviewed = false;
+		this.price = price;
 		this.reserveDateList = reserveDateList;
 	}
 }

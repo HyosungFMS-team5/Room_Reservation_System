@@ -22,11 +22,11 @@ public class TentRoom extends Room implements Serializable{
 		System.out.println("6. 가스 난로를 사용 중이므로 환기에 주의해주시길 바랍니다.");
 	};
 
-	// @Override
-	// static public void showTypeInfo(){
-	// 	super.showTypeInfo();
-	// 	System.out.println("3. 반려동물 동반 불가");
-	// 	System.out.println("4. 공용 샤워실, 공용 화장실 및 공유 주방 이용");
-	// };
+	@Override
+	public void showTypeInfo(){
+		super.showTypeInfo();
+		System.out.println("3. 반려동물 동반 불가");
+		System.out.println("4. 공용 샤워실, 공용 화장실 및 공유 주방 이용");
+	};
 	
 }

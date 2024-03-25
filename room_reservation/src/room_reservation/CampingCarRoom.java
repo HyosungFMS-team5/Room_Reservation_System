@@ -17,14 +17,16 @@ public class CampingCarRoom extends Room implements Serializable{
 	
 	@Override
 	public void showPrecaution() {
+		super.showPrecaution();
 		System.out.println("4. 현관문이 열려있으면 소음으로 인한 민원이 발생할 수 있습니다.");
 		System.out.println("5. 내부 쓰레기통에 정확히 분리수거해주시길 바랍니다.");
 	};
 
-	// @Override
-	// public static void showTypeInfo(){
-	// 	System.out.println("3. 반려동물 동반 가능");
-	// 	System.out.println("4. 내부 샤워실, 화장실 및 주방 보유");
-	// };
+	@Override
+	public void showTypeInfo(){
+		super.showTypeInfo();
+		System.out.println("3. 반려동물 동반 불가");
+		System.out.println("4. 공용 샤워실, 공용 화장실 및 공유 주방 이용");
+	};
 
 }

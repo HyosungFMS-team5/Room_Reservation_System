@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-
+import java.text.NumberFormat;
 import datecalc.util.DateCalc;
 
 public class ReservationSystem {
@@ -84,7 +84,7 @@ public class ReservationSystem {
 		while (true) {
 			for (Map.Entry<String, Room> e : roomMap.entrySet()) {
 				// 출력형식 수정해주세요.
-				System.out.println(e.getKey() + " : " + e.getValue().toString());
+				e.getValue().showRoomInfo();
 			}
 			
 			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | 0. 뒤로가기");
@@ -210,7 +210,6 @@ public class ReservationSystem {
 		List<Room> validRoomList = canReseveRoom(dateList,checkInPerson);
 		
 		while (true) {
-			
 			System.out.println("***************************************");
 			System.out.println("예약가능한 방("+ validRoomList.size() + ")");
 			int idx = 1;
@@ -231,13 +230,27 @@ public class ReservationSystem {
 			if (pickRoom == null) {
 				System.out.println("일치하는 방번호가 없습니다.");
 			} else {
+				// 예약 정보 보여주기
 				System.out.println("====================================");
-				System.out.println("방 번호 : " + pickRoom.getRoomId());
-				System.out.println("방 이름 : " + pickRoom.getRoomName());
+				pickRoom.showRoomInfo();
+
 				System.out.println("숙박 인원 : " + checkInPerson + " / " + pickRoom.getCapacity());
 				System.out.println("체크인 날짜 : " + checkInDate);
 				System.out.println("체크아웃 날짜 : " + checkOutDate);
-				
+
+				// 총 가격
+				int price = pickRoom.getTotalPrice(checkInPerson);
+				NumberFormat numberFormat = NumberFormat.getInstance();
+        String formattedNumber = numberFormat.format(price);
+				System.out.printf("총 가격 : %s원\n", formattedNumber);
+				System.out.println();
+				// 주의 사항
+				pickRoom.showPrecaution();
+				System.out.println();
+				// 안내 사항
+				pickRoom.showTypeInfo();
+				System.out.println();
+				// 예약 확인
 				System.out.println("이대로 예약하시겠습니까? (y/n)");
 				System.out.println("====================================");
 				String yesOrNo = sc.nextLine();
@@ -274,6 +287,7 @@ public class ReservationSystem {
 																  checkInDate,
 																  checkOutDate,
 																  checkInPerson,
+																	price,
 																  dateList);
 					
 					

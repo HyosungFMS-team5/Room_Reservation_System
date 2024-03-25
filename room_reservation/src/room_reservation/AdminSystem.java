@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class AdminSystem {
    
@@ -177,9 +179,10 @@ public class AdminSystem {
    // 예약 내역 조회
    private void showReservation() {
       // 에약내역 파일 불러오면 예약 내역 조회가 된다.
-      List<Reservation> reservationList = fileIO.reservationLoad();
+      Map<String, Reservation> reservationMap = fileIO.reservationLoad();
       
-      for(Reservation reservation : reservationList) {
+      for(Map.Entry<String, Reservation> entry : reservationMap.entrySet()) {
+         Reservation reservation = entry.getValue();
          System.out.println("예약 ID: " + reservation.getReservationId() +
                     ", 사용자 ID: " + reservation.getUserId() +
                     ", 방 ID: " + reservation.getRoomId() +
@@ -192,37 +195,41 @@ public class AdminSystem {
    
     // 예약 취소
     public void cancelReservation() {
-       List<Reservation> reservationList = (List<Reservation>) fileIO.reservationLoad();
+      Map<String, Reservation> reservationMap = fileIO.reservationLoad();
        
-       while (true) {
-          System.out.println("취소를 원하는 예약번호를 입력해주세요. | 0. 뒤로가기");
-          String inputReservationId = sc.nextLine();
-          
-          if (inputReservationId.equals("0")) return;
-          
-          List<Reservation> tempReservationList = new ArrayList<>();
-          Reservation pickReservation = null;
-          
-          for (Reservation reservation : reservationList) {
-             if (reservation.getReservationId().equals(inputReservationId)) {
-                pickReservation = reservation;
-                continue;
-             }
-             
-             tempReservationList.add(reservation);
-          }
-          
-          
-          
-          if (pickReservation == null) {
-             System.out.println("해당하는 방 번호가 없습니다. ");
-          } else {
-             fileIO.reservationSave(tempReservationList);
-             deleteBookedDate(pickReservation);
-             System.out.println("예약이 정상적으로 취소되었습니다.");
-             return;
-          }
-       }
+      while (true) {
+         System.out.println("취소를 원하는 예약번호를 입력해주세요. | 0. 뒤로가기");
+         String inputReservationId = sc.nextLine();
+         
+         if (inputReservationId.equals("0")) return;
+         
+         if (reservationMap.containsKey(inputReservationId)) {
+            // 날짜 지난 예약은 취소 불가
+            if (reservationMap.get(inputReservationId).getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
+               System.out.println("숙박 예정인 예약만 취소할 수 있습니다.");
+               return;
+            }
+
+            // User 클래스 내부 예약 내역 삭제
+            String userId = reservationMap.get(inputReservationId).getUserId();
+            Map<String, User> userMap = fileIO.userLoad();
+            userMap.get(userId).getMyReservationMap().remove(inputReservationId);
+            fileIO.userSave(userMap);
+            
+            // Room 클래스 내부 예약 내역 삭제
+            deleteBookedDate(reservationMap.get(inputReservationId));
+            
+            // 예약 내역 삭제
+            reservationMap.remove(inputReservationId);
+            fileIO.reservationSave(reservationMap);
+            
+            System.out.println("예약이 정상적으로 취소되었습니다.");
+            return;
+         } else {
+            System.out.println("해당하는 방 번호가 없습니다. ");
+         }
+         
+      }
        
     }
     

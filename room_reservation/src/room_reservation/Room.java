@@ -37,7 +37,7 @@ public abstract class Room implements Serializable {
 	public int getTotalPrice(int personNumber) {
 		System.out.printf("추가 1인당 %d원의 요금이 추가됩니다.\n", additionalPrice);
 
-		int totalAdditionalPrcie = personNumber > this.getBaseCapacity() ? additionalPrice * (personNumber - basePrice) : 0;
+		int totalAdditionalPrcie = personNumber > baseCapacity ? additionalPrice * (personNumber - baseCapacity) : 0;
 			
 		return basePrice + totalAdditionalPrcie;
 	};
@@ -50,15 +50,15 @@ public abstract class Room implements Serializable {
 
 	// 시설 이용 시 주의사항
 	public void showPrecaution() {
-		System.out.println("----------시설 이용 시 주의 사항----------");
+		System.out.println("----------숙소 이용 시 주의 사항----------");
 		System.out.println("1. 체크인 시간은 15시, 체크아웃 시간은 11시입니다. 체크인 시간과 체크아웃 시간을 지켜주세요.");
 		System.out.println("2. 실내 흡연은 금지입니다. 흡연장을 이용해주세요.");
 		System.out.println("3. 내부 시설은 저희의 자산입니다. 깨끗하게 사용해주세요.");
 	};
 
-	// // 시설 정보 보여주기
-	// static public void showTypeInfo(){
-	// 	System.out.println("1. 바베큐 시설 이용 가능(이용시 50,000원 추가)");
-	// 	System.out.println("2. 침구류 더 필요할 시 관리실에 문의");
-	// };
+	public void showTypeInfo(){
+		System.out.println("----------시설 이용 시 안내사항----------");
+		System.out.println("1. 바베큐 시설 이용 가능(이용시 50,000원 추가)");
+		System.out.println("2. 침구류 더 필요할 시 관리실에 문의");
+	};
 }
