@@ -11,12 +11,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
+
+import datecalc.util.DateCalc;
 
 public class ReservationSystem {
 	private Scanner sc;
 	private FileIO fileIO;
 	private UserSystem userSystem;
+	private DateCalc dateCalc;
 	private Map<Integer, String> scoreMap;
 	
 	
@@ -24,6 +28,7 @@ public class ReservationSystem {
 		this.sc = sc;
 		this.fileIO = fileIO;
 		this.userSystem = userSystem;
+		this.dateCalc = new DateCalc();
 		this.scoreMap = Map.ofEntries(
     		    Map.entry(1, "★"),
     		    Map.entry(2, "★★"),
@@ -99,12 +104,12 @@ public class ReservationSystem {
 	
 	// 방 상세 조회 
 	private void showRoomDetail(Room room) {
-		List<Review> reviewList = fileIO.reviewLoad();
+		Map<String,Review> reviewMap = fileIO.reviewLoad();
 		List<Review> sameRoomIdReviewList = new ArrayList<>();
-		
-		for (Review review : reviewList) {
-			if (review.getRoomId().equals(room.getRoomId())) {
-				sameRoomIdReviewList.add(review);
+
+		for (Map.Entry<String, Review> review : reviewMap.entrySet()) {
+			if (review.getValue().getRoomId().equals(room.getRoomId())) {
+				sameRoomIdReviewList.add(review.getValue());
 			}
 		}
 		
@@ -150,9 +155,6 @@ public class ReservationSystem {
 		int dateDiff = 0;
 		
 		while (true) {
-			
-			// TODO: LocalDate보다 이전의 값을 입력하면 커트해야함
-			// TODO: checkOutDate가 checkInDate보다 이전이면 커트 
 			if (checkInDate != null && checkOutDate != null && dateDiff > 0) break;
 		
 			System.out.println("원하는 체크인 날짜를 입력하세요 (형식: yyyy-MM-dd): ");
@@ -166,24 +168,24 @@ public class ReservationSystem {
 	        	checkInDate = dateFormat.parse(inputCheckInDate);
 	        	// 시연용 리뷰 남길 때 사이 주석
 	        	
-	        	LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	        	
-	        	if (localCheckInDate.isBefore(LocalDate.now())) {
-	        		System.out.println(LocalDate.now() + " 이후의 날짜를 입력해주세요.");
-	        		continue;
-	        	}
+//	        	LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//	        	
+//	        	if (localCheckInDate.isBefore(LocalDate.now())) {
+//	        		System.out.println(LocalDate.now() + " 이후의 날짜를 입력해주세요.");
+//	        		continue;
+//	        	}
 	      
 	        	//
 	        	checkOutDate = dateFormat.parse(inputCheckOutDate);
 	        	// 시연용 리뷰 남길때 사이 주석
-	        	LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-	        	if (localCheckOutDate.isBefore(localCheckInDate)) {
-	        		System.out.println(localCheckInDate + " 이후의 날짜를 입력해주세요.");
-	        		continue;
-	        	}
+//	        	LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//
+//	        	if (localCheckOutDate.isBefore(localCheckInDate)) {
+//	        		System.out.println(localCheckInDate + " 이후의 날짜를 입력해주세요.");
+//	        		continue;
+//	        	}
 	        	//
-	        	dateDiff = calcDateDiff(checkInDate,checkOutDate);
+	        	dateDiff = dateCalc.calcDateDiff(checkInDate,checkOutDate);
 	        } catch (ParseException e) {
 	            System.out.println("올바른 날짜 형식이 아닙니다.");
 	        } catch (IllegalArgumentException e) {
@@ -202,7 +204,7 @@ public class ReservationSystem {
 			}
 		}
 
-		List<String> dateList = getDateRange(checkInDate, dateDiff);
+		List<String> dateList = dateCalc.getDateRange(checkInDate, dateDiff);
 		
 		// 예약 가능한 방인지 체크
 		List<Room> validRoomList = canReseveRoom(dateList,checkInPerson);
@@ -241,7 +243,6 @@ public class ReservationSystem {
 				String yesOrNo = sc.nextLine();
 				
 				if (yesOrNo.equalsIgnoreCase("y")) {
-					// booked에 date 키로 집어넣고 , reservation data 집어넣고 break
 					
 					Map<String, Room> roomMap = fileIO.roomLoad();
 					
@@ -262,26 +263,33 @@ public class ReservationSystem {
 					
 					System.out.println("정상적으로 예약되었습니다.");
 					
-					List<Reservation> reservationList = fileIO.reservationLoad();
-					reservationList.add(new Reservation(userSystem.getUserId(),
-														pickRoom.getRoomId(), 
-														checkInDate,
-														checkOutDate,
-														checkInPerson,
-														dateList));
+				
+					Map<String,Reservation> reservationMap = fileIO.reservationLoad();
+					Map<String,User> userMap = fileIO.userLoad();
 					
-					fileIO.reservationSave(reservationList);
+					String reservationId = String.format("%04d", new Random().nextInt(10000));
+					Reservation NEW_reservation = new Reservation(reservationId,
+																  userSystem.getUserId(),
+																  pickRoom.getRoomId(), 
+																  checkInDate,
+																  checkOutDate,
+																  checkInPerson,
+																  dateList);
+					
+					
+					reservationMap.put(reservationId, NEW_reservation);
+					userMap.get(userSystem.getUserId()).getMyReservationMap().put(reservationId, NEW_reservation);
+					userSystem.getUser().getMyReservationMap().put(reservationId, NEW_reservation);
+					fileIO.reservationSave(reservationMap);
+					fileIO.userSave(userMap);
 					
 					return;
-
 					
 				} 
 			}
 		}}
 		
-		
-		
-//	}
+
 	
 	// 예약 가능한 방 체크
 	
@@ -307,46 +315,24 @@ public class ReservationSystem {
 		return validRoomList;
 	}
 	
-	// 체크할 날짜 리스트 return
-    private static List<String> getDateRange(Date startDate, int dateDiff) {
-        List<String> dateList = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        for (int i = 0; i < dateDiff; i++) {
-            String dateString = dateFormat.format(calendar.getTime());
-            dateList.add(dateString);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return dateList;
-    }
-	
-	// 체크인 체크아웃 날짜의 차 계산
-    private static int calcDateDiff(Date startDate, Date endDate) {
-        long differenceInMilliseconds = endDate.getTime() - startDate.getTime();
-        long differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
-        return (int) differenceInDays; 
-    }
-	
 	
 	// 나의 예약 내역
     public void showMyReservation() {
-    	List<Reservation> reservationList = fileIO.reservationLoad();
+    	// TODO : resercationLoad => user의 MyreservationID 로 뽑기
+
+    	Map<String,Reservation> myReservationMap = userSystem.getUser().getMyReservationMap();  
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
-    	for (Reservation reservation : reservationList) {
-    		if (reservation.getUserId().equals(userSystem.getUserId())) {
-    			System.out.println("예약번호 : " + reservation.getReservationId());
-    			System.out.println();
-    			System.out.println("예약자 : " + reservation.getUserId() + "| 방번호 : " + reservation.getRoomId() + " | 숙박인원 : " + reservation.getPersonCnt());
-    			System.out.println("체크인 : " + dateFormat.format(reservation.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getCheckOutDate()));
-    			System.out.println("리뷰 작성 여부 :" + reservation.isReviewed() );
-    			System.out.println("----------------------------------------");
-    		}
+    	
+    	for (Map.Entry<String, Reservation> reservation : myReservationMap.entrySet()) {
+    		System.out.println("예약번호 : " + reservation.getKey());
+			System.out.println();
+			System.out.println("예약자 : " + reservation.getValue().getUserId() + "| 방번호 : " + reservation.getValue().getRoomId() + " | 숙박인원 : " + reservation.getValue().getPersonCnt());
+			System.out.println("체크인 : " + dateFormat.format(reservation.getValue().getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getValue().getCheckOutDate()));
+			System.out.println("리뷰 작성 여부 :" + reservation.getValue().isReviewed() );
+			System.out.println("----------------------------------------");
     	}
+
     	// 예약취소
     	while (true) {
     		System.out.println("1. 예약 취소 | 0.뒤로가기");
@@ -355,7 +341,8 @@ public class ReservationSystem {
     		if (choice.equals("0")) return ;
     		
     		if (choice.equals("1")) {
-    			cancelReservation(reservationList);
+    			// TODO : User의 myReservation에서도 빼줘야함
+    			cancelReservation(myReservationMap);
     			return;
     		}
     		
@@ -366,34 +353,39 @@ public class ReservationSystem {
     }
 	
     // 예약 취소
-    public void cancelReservation(List<Reservation> reservationList) {
+    public void cancelReservation(Map<String,Reservation> myReservationMap) {
     	while (true) {
     		System.out.println("취소를 원하는 예약번호를 입력해주세요. | 0. 뒤로가기");
     		String inputReservationId = sc.nextLine();
     		
     		if (inputReservationId.equals("0")) return;
     		
-    		List<Reservation> tempReservationList = new ArrayList<>();
-    		Reservation pickReservation = null;
-    		
-    		for (Reservation reservation : reservationList) {
-    			if (reservation.getReservationId().equals(inputReservationId)) {
-    				pickReservation = reservation;
-    				continue;
+    		if (myReservationMap.containsKey(inputReservationId)) {
+    			if (myReservationMap.get(inputReservationId).getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
+    				System.out.println("숙박 예정인 예약만 취소할 수 있습니다.");
+    				return;
     			}
     			
-    			tempReservationList.add(reservation);
-    		}
-    		
-    		
-    		if (pickReservation == null) {
-    			System.out.println("해당하는 방 번호가 없습니다. ");
-    		} else {
-    			fileIO.reservationSave(tempReservationList);
-    			deleteBookedDate(pickReservation);
+    			deleteBookedDate(myReservationMap.get(inputReservationId));
+    			
+    			Map<String,Reservation> reservationMap = fileIO.reservationLoad();
+    			reservationMap.remove(inputReservationId);
+    			fileIO.reservationSave(reservationMap);
+
+
+    			Map<String, User> userMap = fileIO.userLoad();
+    			userMap.get(userSystem.getUserId()).getMyReservationMap().remove(inputReservationId);
+    			fileIO.userSave(userMap);
+    			
+    			userSystem.getUser().getMyReservationMap().remove(inputReservationId);
+    			
+    			
     			System.out.println("예약이 정상적으로 취소되었습니다.");
     			return;
+    		} else {
+    			System.out.println("해당하는 방 번호가 없습니다. ");
     		}
+    		
     	}
     	
     }
@@ -404,6 +396,7 @@ public class ReservationSystem {
     	
     	for (String date:reservation.getReserveDateList()) {
     		roomMap.get(reservation.getRoomId()).getBookedDate().remove(date);
+    		
     	}
     	
     	fileIO.roomSave(roomMap);
@@ -413,23 +406,20 @@ public class ReservationSystem {
     
     // 리뷰 작성가능한 예약 내역 판별
     public void checkCanReview() {
-    	List<Reservation> reservationList = fileIO.reservationLoad();
+
+    	Map<String,Reservation> myReservationMap = userSystem.getUser().getMyReservationMap(); 
     	LocalDate currentDate = LocalDate.now();
     	List<Reservation> canWriteReviewReservation = new ArrayList<>(); 
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	
-    	for (Reservation reservation : reservationList) {
-    		if (reservation.getUserId().equals(userSystem.getUserId())) {
-    			
-    			Date checkOutDate = reservation.getCheckOutDate();
-                LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                
-                if (!reservation.isReviewed() && localCheckOutDate.isBefore(currentDate)) {
-                	canWriteReviewReservation.add(reservation);
-                }
-    		}
+    	for (Map.Entry<String, Reservation> reservation: myReservationMap.entrySet()) {
+    		Date checkOutDate = reservation.getValue().getCheckOutDate();
+            LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            
+            if (!reservation.getValue().isReviewed() && localCheckOutDate.isBefore(currentDate)) {
+            	canWriteReviewReservation.add(reservation.getValue());
+            }
     	}
-    	
     	
     	System.out.println("=======================리뷰 작성 가능(" + canWriteReviewReservation.size() +")===================");
     	if (canWriteReviewReservation.size() == 0) {
@@ -441,6 +431,8 @@ public class ReservationSystem {
     	} else {
     		System.out.println();
     		for (Reservation reservation : canWriteReviewReservation) {
+    				System.out.println("예약 번호 : " + reservation.getReservationId());
+    				System.out.println();
         			System.out.println("방번호 : " + reservation.getRoomId() + " | 숙박인원 : " + reservation.getPersonCnt());
         			System.out.println("체크인 : " + dateFormat.format(reservation.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getCheckOutDate()));
         			
@@ -449,23 +441,23 @@ public class ReservationSystem {
     	}
     	
     	while (true) {
-    		System.out.println("리뷰를 작성할 방 번호를 입력하세요. | 0. 뒤로가기");
-    		String inputRoomId = sc.nextLine();
+    		System.out.println("리뷰를 작성할 예약 번호를 입력하세요. | 0. 뒤로가기");
+    		String inputReservationId = sc.nextLine();
     		
-    		if (inputRoomId.equals("0")) return ;
+    		if (inputReservationId.equals("0")) return ;
     		
-    		boolean isInputRoomIdValid = false;
+    		Reservation pickReservation = null;
     		for (Reservation reservation : canWriteReviewReservation) {
-    			if (reservation.getRoomId().equals(inputRoomId)) {
-    				isInputRoomIdValid = true;
+    			if (reservation.getReservationId().equals(inputReservationId)) {
+    				pickReservation = reservation;
     				break;
     			}
     		}
     		
-    		if (!isInputRoomIdValid) {
+    		if (pickReservation == null) {
     			System.out.println("해당하는 방 번호가 없습니다. ");
     		} else {
-    			writeReview(inputRoomId);
+    			writeReview(pickReservation);
     			return;
     		}
     		
@@ -476,8 +468,8 @@ public class ReservationSystem {
     
     
     // 리뷰 작성
-    private void writeReview(String roomId) {
-    	List<Review> reviewList = fileIO.reviewLoad();
+    private void writeReview(Reservation reservation) {
+    	Map<String,Review> reviewMap = fileIO.reviewLoad();
 
     	while (true) {
     		
@@ -487,7 +479,7 @@ public class ReservationSystem {
     		System.out.println("후기를 남겨주세요 : ");
     		String inputReviewDetail = sc.nextLine();
     		System.out.println("=========================================");
-    		System.out.println(roomId + "번 방 리뷰");
+    		System.out.println(reservation.getRoomId() + "번 방 리뷰");
     		System.out.println("점수 : " + scoreMap.get(inputScore) );
     		System.out.println("후기 : " + inputReviewDetail);
     		System.out.println("====================================");
@@ -497,22 +489,20 @@ public class ReservationSystem {
     		if (yesOrNo.equals("0")) return ;
     		
     		if (yesOrNo.equalsIgnoreCase("y")) {
-    			reviewList.add(new Review(userSystem.getUserId(), roomId, inputScore, inputReviewDetail));
-    			fileIO.reviewSave(reviewList);
+    			String reviewId = String.format("%04d", new Random().nextInt(10000));
+    			reviewMap.put(reviewId,new Review(reservation.getReservationId(), reservation.getUserId(),reservation.getRoomId(), inputScore, inputReviewDetail));
+    			fileIO.reviewSave(reviewMap);
     			
-    			// 리뷰를 남긴 reservation 이니까 isReviewed true로! 
+    			Map<String, Reservation> reservationMap = fileIO.reservationLoad();
+ 
+    			reservationMap.get(reservation.getReservationId()).setReviewed(true);
+    			fileIO.reservationSave(reservationMap);
     			
-    			List<Reservation> reservationList = fileIO.reservationLoad();
-    			List<Reservation> tempReservationList = new ArrayList<>();
+    			Map<String, User> userMap = fileIO.userLoad();
+    			userMap.get(userSystem.getUserId()).getMyReservationMap().get(reservation.getReservationId()).setReviewed(true);
+    			fileIO.userSave(userMap);
     			
-    			for (Reservation reservation: reservationList) {
-    				if (reservation.getRoomId().equals(roomId)) {
-    					reservation.setReviewed(true);
-    				}
-    				tempReservationList.add(reservation);
-    			}
-    			
-    			fileIO.reservationSave(tempReservationList);
+    			userSystem.getUser().getMyReservationMap().get(reservation.getReservationId()).setReviewed(true);
     			
     			System.out.println("리뷰가 정상적으로 작성되었습니다.");
     			break;
@@ -526,10 +516,10 @@ public class ReservationSystem {
     // 내 리뷰 보기
     
     public void showAllReviewOfMine() {
-    	List<Review> reviewList = fileIO.reviewLoad();
+    	Map<String,Review> reviewMap = fileIO.reviewLoad();
     	
-    	System.out.println("=======================내가 작성한 리뷰(" + reviewList.size() +")===================");
-    	if (reviewList.size() == 0) {
+    	System.out.println("=======================내가 작성한 리뷰(" + reviewMap.size() +")===================");
+    	if (reviewMap.size() == 0) {
     		System.out.println();
     		System.out.println("         아직 작성한 리뷰가 없습니다...        ");
     		System.out.println();
@@ -537,13 +527,15 @@ public class ReservationSystem {
     	
     	} else {
     		System.out.println();
-    		for (Review review: reviewList) {
-        			System.out.println();
-        			System.out.println(review.getRoomId() + "번 방");
-        			System.out.println(userSystem.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getScore()) );
-        			System.out.println("후기 : " + review.getContent());
-        			System.out.println("----------------------------------------");
-        	}
+    		
+    		for (Map.Entry<String, Review> review : reviewMap.entrySet()) {
+    			System.out.println(review.getValue().getReservationId());
+    			System.out.println();
+    			System.out.println(review.getValue().getRoomId() + "번 방");
+    			System.out.println(userSystem.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getValue().getScore()) );
+    			System.out.println("후기 : " + review.getValue().getContent());
+    			System.out.println("----------------------------------------");
+    		}
     	}
     	
     }
