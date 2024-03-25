@@ -95,7 +95,7 @@ public class ReservationSystem {
 	            roomMap.get(key).showRoomInfo();
 	        }
 			
-			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. |" + ConsoleMethod.FONT_RED + " 0. 뒤로가기" + ConsoleMethod.RESET);
+			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_RED + " 0. 뒤로가기" + ConsoleMethod.RESET);
 					
 			String inputRoomId = sc.nextLine();
 			
@@ -284,7 +284,7 @@ public class ReservationSystem {
 					
 					
 					
-					System.out.println("정상적으로 예약되었습니다.");
+					System.out.println(ConsoleMethod.FONT_GREEN + "정상적으로 예약되었습니다." + ConsoleMethod.RESET);
 					
 				
 					Map<String,Reservation> reservationMap = fileIO.reservationLoad();
