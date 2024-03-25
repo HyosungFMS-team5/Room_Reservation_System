@@ -13,10 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import datecalc.util.DateCalc;
+
 public class ReservationSystem {
 	private Scanner sc;
 	private FileIO fileIO;
 	private UserSystem userSystem;
+	private DateCalc dateCalc;
 	private Map<Integer, String> scoreMap;
 	
 	
@@ -24,6 +27,7 @@ public class ReservationSystem {
 		this.sc = sc;
 		this.fileIO = fileIO;
 		this.userSystem = userSystem;
+		this.dateCalc = new DateCalc();
 		this.scoreMap = Map.ofEntries(
     		    Map.entry(1, "★"),
     		    Map.entry(2, "★★"),
@@ -183,7 +187,7 @@ public class ReservationSystem {
 	        		continue;
 	        	}
 	        	//
-	        	dateDiff = calcDateDiff(checkInDate,checkOutDate);
+	        	dateDiff = dateCalc.calcDateDiff(checkInDate,checkOutDate);
 	        } catch (ParseException e) {
 	            System.out.println("올바른 날짜 형식이 아닙니다.");
 	        } catch (IllegalArgumentException e) {
@@ -202,7 +206,7 @@ public class ReservationSystem {
 			}
 		}
 
-		List<String> dateList = getDateRange(checkInDate, dateDiff);
+		List<String> dateList = dateCalc.getDateRange(checkInDate, dateDiff);
 		
 		// 예약 가능한 방인지 체크
 		List<Room> validRoomList = canReseveRoom(dateList,checkInPerson);
@@ -307,29 +311,6 @@ public class ReservationSystem {
 		return validRoomList;
 	}
 	
-	// 체크할 날짜 리스트 return
-    private static List<String> getDateRange(Date startDate, int dateDiff) {
-        List<String> dateList = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        for (int i = 0; i < dateDiff; i++) {
-            String dateString = dateFormat.format(calendar.getTime());
-            dateList.add(dateString);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return dateList;
-    }
-	
-	// 체크인 체크아웃 날짜의 차 계산
-    private static int calcDateDiff(Date startDate, Date endDate) {
-        long differenceInMilliseconds = endDate.getTime() - startDate.getTime();
-        long differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
-        return (int) differenceInDays; 
-    }
 	
 	
 	// 나의 예약 내역
