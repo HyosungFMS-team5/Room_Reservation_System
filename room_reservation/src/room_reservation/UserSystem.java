@@ -1,5 +1,6 @@
 package room_reservation;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -134,7 +135,7 @@ public class UserSystem {
 		if (inputPhone == null) return;
 
 		// 유저정보 저장
-		User inputUser = new User(inputID, inputPW, inputPhone);
+		User inputUser = new User(inputID, inputPW, inputPhone, new HashMap<>());
 		userMap.put(inputUser.getUserID(), inputUser);
 		fileIO.userSave(userMap);
 

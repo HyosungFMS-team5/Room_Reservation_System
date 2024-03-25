@@ -170,6 +170,7 @@ public class FileIO {
 		} catch (ClassNotFoundException e) {  // 클래스 에러
 			System.out.println("잘못된 객체입니다");
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("오류가 발생하였습니다");
 		}finally {
 			try {
@@ -187,7 +188,7 @@ public class FileIO {
 	
 	// 예약 내역 저장
 	
-	public void reservationSave(List<Reservation> reservationList) {
+	public void reservationSave(Map<String,Reservation> reservationMap) {
 		File file  = new File("ReservationData.txt");
 
 		FileOutputStream fos = null;
@@ -201,7 +202,7 @@ public class FileIO {
 			out = new ObjectOutputStream(bos);  // 직렬화 지원 객체
 			
 			// 직렬화
-			out.writeObject(reservationList);
+			out.writeObject(reservationMap);
 
 		} catch(Exception e) {
 			// 예외 처리 - 나중에
@@ -221,8 +222,8 @@ public class FileIO {
 	
 	// 예약 내역 불러오기
 
-	public List<Reservation> reservationLoad() {
-		List<Reservation> reservationList = new ArrayList<>();
+	public Map<String,Reservation> reservationLoad() {
+		Map<String,Reservation> reservationMap = new HashMap<>();
 		
 		String filename = "ReservationData.txt";
 		
@@ -235,8 +236,8 @@ public class FileIO {
 			bis = new BufferedInputStream(fis);
 			ois = new ObjectInputStream(bis);
 			
-			List<Reservation> storedList = (List<Reservation>) ois.readObject();
-            reservationList.addAll(storedList);
+			Map<String,Reservation> storedMap = (Map<String,Reservation>) ois.readObject();
+			reservationMap.putAll(storedMap);
 			
 		} catch (FileNotFoundException e) {  // 잘못된 경로
 			System.out.println("파일이 존재하지 않습니다");
@@ -262,12 +263,12 @@ public class FileIO {
 			}
 		}
 
-		return reservationList;
+		return reservationMap;
 	}
 
 	
 	// 리뷰내역 저장 
-	public void reviewSave(List<Review> reviewList) {
+	public void reviewSave(Map<String,Review> reviewMap) {
 		File file  = new File("ReviewData.txt");
 
 		FileOutputStream fos = null;
@@ -281,7 +282,7 @@ public class FileIO {
 			out = new ObjectOutputStream(bos);  // 직렬화 지원 객체
 			
 			// 직렬화
-			out.writeObject(reviewList);
+			out.writeObject(reviewMap);
 
 		} catch(Exception e) {
 			// 예외 처리 - 나중에
@@ -302,8 +303,8 @@ public class FileIO {
 	
 	// 리뷰 불러오기
 
-	public List<Review> reviewLoad() {
-		List<Review> reviewList = new ArrayList<>();
+	public Map<String,Review> reviewLoad() {
+		Map<String,Review> reviewMap = new HashMap<>();
 		
 		String filename = "ReviewData.txt";
 		
@@ -316,8 +317,8 @@ public class FileIO {
 			bis = new BufferedInputStream(fis);
 			ois = new ObjectInputStream(bis);
 			
-			List<Review> storedList = (List<Review>) ois.readObject();
-			reviewList.addAll(storedList);
+			Map<String,Review> storedMap = (Map<String,Review>) ois.readObject();
+			reviewMap.putAll(storedMap);
 			
 		} catch (FileNotFoundException e) {  // 잘못된 경로
 			System.out.println("파일이 존재하지 않습니다");
@@ -343,6 +344,6 @@ public class FileIO {
 			}
 		}
 
-		return reviewList;
+		return reviewMap;
 	}
 }
