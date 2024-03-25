@@ -8,4 +8,5 @@ public class TentRoom extends Room implements Serializable{
 		super(roomId, roomName, capacity, description);
 	}
 
+	
 }
