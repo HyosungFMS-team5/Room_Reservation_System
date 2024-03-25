@@ -349,7 +349,12 @@ public class ReservationSystem {
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
     	
     	for (Map.Entry<String, Reservation> reservation : myReservationMap.entrySet()) {
-    		System.out.println("예약번호 : " + reservation.getKey());
+    		if(myReservationMap.get(reservation.getKey()).isCanceled()) {
+    			System.out.println(ConsoleMethod.FONT_RED + "예약번호 : " + reservation.getKey() + " (관리자에 의해 취소된 예약입니다.)" + ConsoleMethod.RESET);
+    		} else {
+    			System.out.println("예약번호 : " + reservation.getKey());
+    		}
+    		
 			System.out.println();
 			System.out.println("예약자 : " + reservation.getValue().getUserId() + "| 방번호 : " + reservation.getValue().getRoomId() + " | 숙박인원 : " + reservation.getValue().getPersonCnt());
 			System.out.println("체크인 : " + dateFormat.format(reservation.getValue().getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getValue().getCheckOutDate()));
