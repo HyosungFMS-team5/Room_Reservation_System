@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import datecalc.util.DateCalc;
 import lombok.Getter;
 
 @Getter
@@ -27,7 +28,7 @@ public class UserSystem {
 		boolean isEnd = false;
 		while(!isEnd) {
 			isEnd = isLoggedIn()? showAfterLogin() : showBeforLogin();
-			System.out.println("---------------------------------------");
+			System.out.println();
 		}
 	}
 
@@ -35,17 +36,20 @@ public class UserSystem {
 	private boolean showBeforLogin() {
 		boolean isEnd = false;
 
-		System.out.println("1. 회원가입 | 2. 로그인 | 3. 뒤로 가기");
+		System.out.println("1. 로그인 | 2. 회원가입 | 0. 뒤로 가기");
+		System.out.println("---------------------------------------");
+
 		String choice = sc.nextLine();
+		System.out.println();
 		
 		switch (choice) {
 			case "1":
+				login();
+			break;
+			case "2":
 				signUp();
 				break;
-			case "2":
-				login();
-				break;
-			case "3":
+			case "0":
 				isEnd = true;
 				break;
 			default:
@@ -60,8 +64,11 @@ public class UserSystem {
 	private boolean showAfterLogin() {
 		boolean isEnd = false;
 
-		System.out.println("1. 펜션 예약하기 | 2. 로그아웃 | 3. 전화번호 수정 | 4. 비밀번호 수정 | 5. 회원탈퇴");
+		System.out.println("1. 펜션 메뉴로 이동 | 2. 로그아웃 | 3. 전화번호 수정 | 4. 비밀번호 수정 | 5. 회원탈퇴");
+		System.out.println("---------------------------------------");
+
 		String choice = sc.nextLine();
+		System.out.println();
 		
 		switch (choice) {
 			case "1":
@@ -90,7 +97,7 @@ public class UserSystem {
 	
 	// 로그인
 	private void login() {
-		System.out.println("로그인을 진행합니다.");
+		System.out.println("********************로그인********************");
 		// 추가기능 - 로그인 시도 횟수 제한
 		// 아이디 입력
 		userInputer = new UserInputerLoginID(sc, "아이디를 입력해주세요", "0", "로그인", userMap);
@@ -107,18 +114,19 @@ public class UserSystem {
 		this.userId = inputID;  // 얘는 날리는 게 나을 수도??
 		this.user = userMap.get(inputID);
 
-		System.out.println("로그인에 성공하였습니다.");
+		System.out.println("********************로그인 완료********************");
 	}
 
 	// 로그아웃
 	private void logout() {
 		user = null;
 		loggedIn = false;
+		System.out.println("********************로그아웃********************");
 	}
 	
 	// 회원가입
 	private void signUp() {
-		System.out.println("회원가입을 진행합니다.");
+		System.out.println("********************회원가입********************");
 		// 아이디 입력
 		userInputer = new UserInputerSignupID(sc, "아이디를 입력해주세요", "0", "회원가입", userMap);
 		String inputID = userInputer.validatedInput();
@@ -139,15 +147,15 @@ public class UserSystem {
 		userMap.put(inputUser.getUserID(), inputUser);
 		fileIO.userSave(userMap);
 
-		System.out.println("회원 가입을 완료하였습니다.");
+		System.out.println("********************회원 가입 완료********************");
 	}
 
 	// 전화번호 수정
 	private void updatePhone() {
-		System.out.println("등록된 전화번호를 수정합니다.현재 저장된 번호 : ");
+		System.out.println("********************전화 번호 수정********************");
 		System.out.println("현재 저장된 번호 : " + user.getPhone());
 		// 전화번호 입력
-		userInputer = new UserInputerSignupPhone(sc, "전화번호를 입력해주세요.(OOO-OOOO-OOOO)", "0", "전화번호 수정");
+		userInputer = new UserInputerSignupPhone(sc, "수정할 전화번호를 입력해주세요.(OOO-OOOO-OOOO)", "0", "전화번호 수정");
 		String inputPhone = userInputer.validatedInput();
 		if (inputPhone == null) return;
 		// 정보 수정
@@ -155,13 +163,13 @@ public class UserSystem {
 		userMap.put(user.getUserID(), user);
 		fileIO.userSave(userMap);
 
-		System.out.println("전화번호 수정이 완료되었습니다.");
 		System.out.println("변경된 번호 : " + user.getPhone());
+		System.out.println("********************전화번호 수정 완료********************");
 	}
 
 	// 비밀번호 수정
 	private void updatePW() {
-		System.out.println("비밀번호를 수정합니다.");
+		System.out.println("********************비밀번호 수정********************");
 		// 현재 비밀번호 입력
 		userInputer = new UserInputerLoginPW(sc, "현재 비밀번호 입력해주세요", "0", "비밀번호 수정");
 		String confirmPW = userInputer.validatedInput(userMap.get(user.getUserID()).getUserPW());
@@ -175,22 +183,50 @@ public class UserSystem {
 		userMap.put(user.getUserID(), user);
 		fileIO.userSave(userMap);
 
-		System.out.println("비밀번호 수정이 완료되었습니다.");
+		System.out.println("********************비밀번호 수정 완료********************");
 	}
 
 	// 회원 정보 삭제
 	private void deleteInfo() {
+		System.out.println("********************회원정보 삭제********************");
 		System.out.println("정말로 회원정보를 삭제하시겠습니까?(예: y)");
 		String choice = sc.nextLine();
 
 		if(choice.equals("y")) {
+			// 예약 데이터 삭제
+			deleteReservation();
+			// 유저 데이터 삭제
 			userMap.remove(user.getUserID());
 			fileIO.userSave(userMap);
-			logout();
-			System.out.println("회원정보 삭제가 완료되었습니다.");
-		} 
+			// 로그아웃
+			logout(); 
+			System.out.println("********************회원정보 삭제 완료********************");
+		} else {
+			System.out.println("********************회원정보 삭제 취소********************");
+		}
+	}
 
-		System.out.println("회원정보 삭제를 종료합니다.");
+	private void deleteReservation() {
+		// 데이터 불러오기
+		Map<String, Reservation> myReservations = user.getMyReservationMap();
+		Map<String, Reservation> reservationMap = fileIO.reservationLoad();
+		Map<String, Room> roomMap = fileIO.roomLoad();
+		// 예약 내역 삭제
+		for (Map.Entry<String, Reservation> e : myReservations.entrySet()) {
+			// reservationMap 내부 예약 데이터 삭제
+			reservationMap.remove(e.getKey());
+			// Room 객체 내부 예약 데이터 삭제
+			Reservation reservation = e.getValue();
+			Room room = roomMap.get(reservation.getRoomId());
+			int dateDiff = DateCalc.calcDateDiff(reservation.getCheckInDate(), reservation.getCheckOutDate());
+			for (String bookedDate : DateCalc.getDateRange(reservation.getCheckInDate(), dateDiff)) {
+				room.getBookedDate().remove(bookedDate);
+			}
+		}
+		// 변경 내용 저장
+		fileIO.reservationSave(reservationMap);
+		fileIO.roomSave(roomMap);
+
 	}
 
 }

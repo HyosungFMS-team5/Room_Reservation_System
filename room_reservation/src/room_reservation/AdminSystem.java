@@ -218,7 +218,7 @@ public class AdminSystem {
       }
    }
 
-
+   // 예약 내역 조회
    private void showReservation() {
       // 에약내역 파일 불러오면 예약 내역 조회가 된다.
       Map<String, Reservation> reservationMap = fileIO.reservationLoad();
@@ -258,14 +258,13 @@ public class AdminSystem {
             // User 클래스 내부 예약 내역 삭제
             String userId = reservationMap.get(inputReservationId).getUserId();
             Map<String, User> userMap = fileIO.userLoad();
-            userMap.get(userId).getMyReservationMap().put(userId, reservation);
+            userMap.get(userId).getMyReservationMap().put(inputReservationId, reservation);
             fileIO.userSave(userMap);
             
             // Room 클래스 내부 예약 내역 삭제
             deleteBookedDate(reservationMap.get(inputReservationId));
             
             // 예약 내역 삭제
-            reservationMap.put(inputReservationId, reservation);
             fileIO.reservationSave(reservationMap);
             
             

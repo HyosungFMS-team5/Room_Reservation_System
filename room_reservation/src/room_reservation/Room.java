@@ -46,6 +46,8 @@ public abstract class Room implements Serializable {
 	public void showRoomInfo() {
 		System.out.printf("%s번 방 / %s\n", roomId, roomName);
 		System.out.printf("%d원 / 기준 %d인(최대 : %d인)\n", basePrice, baseCapacity, capacity);
+		System.out.println();
+		System.out.println("-------------------------------------------------");
 	}
 
 	// 시설 이용 시 주의사항
