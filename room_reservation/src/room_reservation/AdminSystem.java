@@ -75,18 +75,40 @@ public class AdminSystem {
    private void login( ) {
       System.out.println("관리자 패스워드를 입력하세요");
       String inputPW = sc.nextLine();
-      if (inputPW.equals(Admin.adminPW)) loggedIn = true;
-      System.out.println("관리자 인증이 완료되었습니다.");
+      if (inputPW.equals(Admin.adminPW)) {
+         loggedIn = true;
+         System.out.println("관리자 인증이 완료되었습니다.");
+      }else{
+         System.out.println("관리자 로그인 실패 : 패스워드를 정확하게 입력해주세요.");
+      }
+      
    }
    
    // 방 목록 보여주기
    private void showRoom() {
       System.out.println("-----------------------------------방 리스트-----------------------------------");
-      
-      for (Map.Entry<String, Room> e : roomMap.entrySet()) {
-         Room room = e.getValue();
-         room.showRoomInfo();
-      }
+		
+		while (true) {
+			for (Map.Entry<String, Room> e : roomMap.entrySet()) {
+				// 출력형식 수정해주세요.
+				e.getValue().showRoomInfo();
+            System.out.println("-----------------------------------------------------");
+            System.out.println();
+			}
+			
+			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | 0. 뒤로가기");
+			String inputRoomId = sc.nextLine();
+			
+			if (inputRoomId.equals("0")) return ;
+			
+			if (!roomMap.containsKey(inputRoomId)) {
+				System.out.println("해당하는 방번호의 방은 없습니다. ");
+			} else {
+			   showRoomDetail(roomMap.get(inputRoomId));
+            return;
+			}
+			
+		}
    }
 
    // 2. 방 추가
@@ -94,11 +116,19 @@ public class AdminSystem {
       System.out.println("-----------------------------------방 추가-----------------------------------");
       // 방 정보 입력
       System.out.println("방ID를 입력해주세요. (0: 취소)");
-      String roomId = sc.nextLine();
+      
+      String roomId=null;
+      while(true) {
+         roomId = sc.nextLine();
+         if (!roomMap.containsKey(roomId)) break;
+         System.out.println("이미 존재하는 방 ID입니다.");
+      }
+      
       if (roomId.equals("0")) {
          System.out.println("취소하셨습니다.");
          return;
       }
+
       String roomName = inputString("방 이름");
       if (roomName == null) return;
       int baseCapacity = inputNumber("기준 숙박 인원");
@@ -139,7 +169,9 @@ public class AdminSystem {
    private void showRoomDetail(Room room) {
       System.out.printf("-----------------------------------%s번 방 상세 내역-----------------------------------\n", room.getRoomId());
       room.showRoomInfo();
+      
       System.out.println(room.getDescription());
+
    }
    
    
@@ -164,19 +196,29 @@ public class AdminSystem {
    // 방 정보 삭제
    private void deleteRoomInfo() {
       String roomId = inputRoomId("삭제");
+      String deleteYN;
       
       if (roomMap.containsKey(roomId)) {
-         roomMap.remove(roomId); // 방 삭제
-         fileIO.roomSave(roomMap); // 변경된 방 정보를 파일에 저장
-         System.out.println("방 정보가 성공적으로 삭제되었습니다.");
-         showRoom(); // 변경된 방 목록 출력
+         System.out.println("정말로 방 정보를 삭제하시겠습니까? (y/n)");
+         deleteYN = sc.nextLine();
+
+         if(deleteYN.equals("y")){
+            roomMap.remove(roomId); // 방 삭제
+            fileIO.roomSave(roomMap); // 변경된 방 정보를 파일에 저장
+            System.out.println("방 정보가 성공적으로 삭제되었습니다.");
+            showRoom(); // 변경된 방 목록 출력
+         }else if(deleteYN.equals("n")){
+            return;
+         }else{
+            System.out.println("잘못된 입력입니다.");
+         }
+
       } else {
          System.out.println("해당하는 방 정보가 없습니다.");
       }
    }
 
 
-   // 예약 내역 조회
    private void showReservation() {
       // 에약내역 파일 불러오면 예약 내역 조회가 된다.
       Map<String, Reservation> reservationMap = fileIO.reservationLoad();
@@ -210,18 +252,22 @@ public class AdminSystem {
                return;
             }
 
+            Reservation reservation = reservationMap.get(inputReservationId);
+            reservation.setCanceled(true);
+
             // User 클래스 내부 예약 내역 삭제
             String userId = reservationMap.get(inputReservationId).getUserId();
             Map<String, User> userMap = fileIO.userLoad();
-            userMap.get(userId).getMyReservationMap().remove(inputReservationId);
+            userMap.get(userId).getMyReservationMap().put(userId, reservation);
             fileIO.userSave(userMap);
             
             // Room 클래스 내부 예약 내역 삭제
             deleteBookedDate(reservationMap.get(inputReservationId));
             
             // 예약 내역 삭제
-            reservationMap.remove(inputReservationId);
+            reservationMap.put(inputReservationId, reservation);
             fileIO.reservationSave(reservationMap);
+            
             
             System.out.println("예약이 정상적으로 취소되었습니다.");
             return;
