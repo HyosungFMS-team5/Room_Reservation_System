@@ -27,7 +27,7 @@ public class Menu {
 			else displayAdminSystem();
 		}
 		if (isUser) displayReservation();
-		System.out.println("예약시스템을 종료합니다.");
+		System.out.println(ConsoleMethod.FONT_GREEN + "예약시스템을 종료합니다." + ConsoleMethod.RESET);
 	}
 	
 	// 초기 메뉴 조회 - 관리자, 유저 선택
@@ -46,7 +46,7 @@ public class Menu {
 			case "2": isUser = true;
 				return;
 			default:
-				System.out.println("잘못된 입력입니다.");
+				System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
 				break;
 			}
 		}

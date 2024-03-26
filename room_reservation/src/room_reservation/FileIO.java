@@ -78,34 +78,31 @@ public class FileIO {
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		ObjectInputStream ois = null;
-		
-		try {
-			fis = new FileInputStream(file);
-			bis = new BufferedInputStream(fis);
-			ois = new ObjectInputStream(bis);
 
-			if (file.exists()) userMap = (Map<String, User>)ois.readObject();
-			
-		} catch (FileNotFoundException e) {  // 잘못된 경로
-			System.out.println("파일이 존재하지 않습니다");
-		} catch (EOFException e) {  // 파일의 끝
-		} catch (IOException e) {  // 입출력 에러
-			e.printStackTrace();
-			System.out.println("파일을 읽을 수 없습니다");
-		} catch (ClassNotFoundException e) {  // 클래스 에러
-			System.out.println("잘못된 객체입니다");
-		} catch (Exception e) {
-			System.out.println("오류가 발생하였습니다");
-		}finally {
+		if (file.exists()) {
 			try {
-				ois.close();
-				bis.close();
-				fis.close();
-			} catch (Exception e2) {
-				System.out.println(e2.getMessage());
+				fis = new FileInputStream(file);
+				bis = new BufferedInputStream(fis);
+				ois = new ObjectInputStream(bis);
+	
+				userMap = (Map<String, User>)ois.readObject();
+				
+			} catch (FileNotFoundException e) {  // 잘못된 경로
+			} catch (EOFException e) {  // 파일의 끝
+			} catch (IOException e) {  // 입출력 에러
+			} catch (ClassNotFoundException e) {  // 클래스 에러
+			} catch (Exception e) {
+			}finally {
+				try {
+					ois.close();
+					bis.close();
+					fis.close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
 			}
 		}
-
+		
 		return userMap;
 	}
 	
@@ -147,38 +144,33 @@ public class FileIO {
 	public Map<String, Room> roomLoad() {
 		Map<String, Room> roomMap = new HashMap<>();
 		
-		String filename = "roomData.txt";
+		File file = new File("roomData.txt");
 		
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		ObjectInputStream ois = null;
 		
-		try {
-			fis = new FileInputStream(filename);
-			bis = new BufferedInputStream(fis);
-			ois = new ObjectInputStream(bis);
-			
-			Map<String, Room> storedMap = (Map<String, Room>) ois.readObject();
-			roomMap.putAll(storedMap);
-			
-		} catch (FileNotFoundException e) {  // 잘못된 경로
-			System.out.println("파일이 존재하지 않습니다");
-		} catch (EOFException e) {  // 파일의 끝
-		} catch (IOException e) {  // 입출력 에러
-			e.printStackTrace();
-			System.out.println("파일을 읽을 수 없습니다");
-		} catch (ClassNotFoundException e) {  // 클래스 에러
-			System.out.println("잘못된 객체입니다");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("오류가 발생하였습니다");
-		}finally {
+		if (file.exists()) {
 			try {
-				ois.close();
-				bis.close();
-				fis.close();
-			} catch (Exception e2) {
-				System.out.println(e2.getMessage());
+				fis = new FileInputStream(file);
+				bis = new BufferedInputStream(fis);
+				ois = new ObjectInputStream(bis);
+				
+				roomMap = (Map<String, Room>) ois.readObject();
+				
+			} catch (FileNotFoundException e) {  // 잘못된 경로
+			} catch (EOFException e) {  // 파일의 끝
+			} catch (IOException e) {  // 입출력 에러
+			} catch (ClassNotFoundException e) {  // 클래스 에러
+			} catch (Exception e) {
+			}finally {
+				try {
+					ois.close();
+					bis.close();
+					fis.close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
 			}
 		}
 
@@ -225,43 +217,40 @@ public class FileIO {
 	public Map<String,Reservation> reservationLoad() {
 		Map<String,Reservation> reservationMap = new HashMap<>();
 		
-		String filename = "ReservationData.txt";
-		
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		ObjectInputStream ois = null;
-		
-		try {
-			fis = new FileInputStream(filename);
-			bis = new BufferedInputStream(fis);
-			ois = new ObjectInputStream(bis);
+		File file = new File("ReservationData.txt");
+
+		if(file.exists()) {
+			FileInputStream fis = null;
+			BufferedInputStream bis = null;
+			ObjectInputStream ois = null;
 			
-			Map<String,Reservation> storedMap = (Map<String,Reservation>) ois.readObject();
-			reservationMap.putAll(storedMap);
-			
-		} catch (FileNotFoundException e) {  // 잘못된 경로
-			System.out.println("파일이 존재하지 않습니다");
-		} catch (EOFException e) {  // 파일의 끝
-		} catch (IOException e) {  // 입출력 에러
-			e.printStackTrace();
-			System.out.println("파일을 읽을 수 없습니다");
-		} catch (ClassNotFoundException e) {  // 클래스 에러
-			System.out.println("잘못된 객체입니다");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("오류가 발생하였습니다");
-		}finally {
 			try {
-				if (ois != null)
-                    ois.close();
-                if (bis != null)
-                    bis.close();
-                if (fis != null)
-                    fis.close();
-			} catch (Exception e2) {
-				System.out.println(e2.getMessage());
+				fis = new FileInputStream(file);
+				bis = new BufferedInputStream(fis);
+				ois = new ObjectInputStream(bis);
+				
+				reservationMap = (Map<String,Reservation>) ois.readObject();
+				
+			} catch (FileNotFoundException e) {  // 잘못된 경로
+			} catch (EOFException e) {  // 파일의 끝
+			} catch (IOException e) {  // 입출력 에러
+			} catch (ClassNotFoundException e) {  // 클래스 에러
+			} catch (Exception e) {
+			}finally {
+				try {
+					if (ois != null)
+											ois.close();
+									if (bis != null)
+											bis.close();
+									if (fis != null)
+											fis.close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
 			}
 		}
+		
+
 
 		return reservationMap;
 	}
@@ -306,41 +295,36 @@ public class FileIO {
 	public Map<String,Review> reviewLoad() {
 		Map<String,Review> reviewMap = new HashMap<>();
 		
-		String filename = "ReviewData.txt";
+		File file = new File("ReviewData.txt");
 		
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		ObjectInputStream ois = null;
 		
-		try {
-			fis = new FileInputStream(filename);
-			bis = new BufferedInputStream(fis);
-			ois = new ObjectInputStream(bis);
-			
-			Map<String,Review> storedMap = (Map<String,Review>) ois.readObject();
-			reviewMap.putAll(storedMap);
-			
-		} catch (FileNotFoundException e) {  // 잘못된 경로
-			System.out.println("파일이 존재하지 않습니다");
-		} catch (EOFException e) {  // 파일의 끝
-		} catch (IOException e) {  // 입출력 에러
-			e.printStackTrace();
-			System.out.println("파일을 읽을 수 없습니다");
-		} catch (ClassNotFoundException e) {  // 클래스 에러
-			System.out.println("잘못된 객체입니다");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("오류가 발생하였습니다");
-		}finally {
+		if (file.exists()) {
 			try {
-				if (ois != null)
-                    ois.close();
-                if (bis != null)
-                    bis.close();
-                if (fis != null)
-                    fis.close();
-			} catch (Exception e2) {
-				System.out.println(e2.getMessage());
+				fis = new FileInputStream(file);
+				bis = new BufferedInputStream(fis);
+				ois = new ObjectInputStream(bis);
+				
+				reviewMap = (Map<String,Review>) ois.readObject();
+				
+			} catch (FileNotFoundException e) {  // 잘못된 경로
+			} catch (EOFException e) {  // 파일의 끝
+			} catch (IOException e) {  // 입출력 에러
+			} catch (ClassNotFoundException e) {  // 클래스 에러
+			} catch (Exception e) {
+			}finally {
+				try {
+					if (ois != null)
+											ois.close();
+									if (bis != null)
+											bis.close();
+									if (fis != null)
+											fis.close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
 			}
 		}
 
