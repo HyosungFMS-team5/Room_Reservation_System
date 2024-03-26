@@ -25,8 +25,8 @@ public class CampingCarRoom extends Room implements Serializable{
 	@Override
 	public void showTypeInfo(){
 		super.showTypeInfo();
-		System.out.println("3. 반려동물 동반 불가");
-		System.out.println("4. 공용 샤워실, 공용 화장실 및 공유 주방 이용");
+		System.out.println("3. 반려동물 동반 가능");
+		System.out.println("4. 내부 화장실 및 샤워실, 주방 존재");
 	};
 
 }

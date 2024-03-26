@@ -8,7 +8,8 @@ public class TentRoom extends Room implements Serializable{
 		super(roomId, roomName, baseCapacity, capacity, description, basePrice);
 		super.setAdditionalPrice(20000);
 	}
-
+	
+	@Override
 	public void showRoomInfo() {
 		System.out.print("텐트형 / ");
 		super.showRoomInfo();
