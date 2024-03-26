@@ -34,11 +34,11 @@ public class ReservationSystem {
 		this.userSystem = userSystem;
 		this.dateCalc = new DateCalc();
 		this.scoreMap = Map.ofEntries(
-    		    Map.entry(1, "★"),
-    		    Map.entry(2, "★ ★"),
-    		    Map.entry(3, "★ ★ ★"),
-    		    Map.entry(4, "★ ★ ★ ★"),
-    		    Map.entry(5, "★ ★ ★ ★ ★")
+    		    Map.entry(1, ConsoleMethod.FONT_YELLOW + "★" + ConsoleMethod.RESET),
+    		    Map.entry(2, ConsoleMethod.FONT_YELLOW + "★ ★"+ ConsoleMethod.RESET),
+    		    Map.entry(3, ConsoleMethod.FONT_YELLOW + "★ ★ ★"+ ConsoleMethod.RESET),
+    		    Map.entry(4, ConsoleMethod.FONT_YELLOW + "★ ★ ★ ★"+ ConsoleMethod.RESET),
+    		    Map.entry(5, ConsoleMethod.FONT_YELLOW + "★ ★ ★ ★ ★"+ ConsoleMethod.RESET)
     		);
 	}
 	
@@ -47,7 +47,7 @@ public class ReservationSystem {
 	public void run() {
 		
 		while (true) {
-			System.out.println("1. 펜션 목록 보기 | 2. 펜션 예약하기 | 3.나의 예약 내역 | 4. 리뷰 작성하기 | 5. 내 리뷰 보기 | 6. 뒤로가기 ");
+			System.out.println("1. 펜션 목록 보기 | 2. 펜션 예약하기 | 3.나의 예약 내역 | 4. 리뷰 작성하기 | 5. 내 리뷰 보기 |"+ ConsoleMethod.FONT_PURPLE + " 6. 뒤로가기 " + ConsoleMethod.RESET);
 			String choice = sc.nextLine();
 			switch (choice) {
 			case "1": {
@@ -88,21 +88,21 @@ public class ReservationSystem {
 		
 		while (true) {
 
-			System.out.println("**************** 예약 가능한 숙소(" + roomMap.size() +") ****************");
-			
+			System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    예약 가능한 숙소(" + roomMap.size() +")                    " + ConsoleMethod.RESET);
+			System.out.println();
 			for (String key : sortedKeys) {
 				System.out.println();
 	            roomMap.get(key).showRoomInfo();
 	        }
 			
-			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_RED + " 0. 뒤로가기" + ConsoleMethod.RESET);
+			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_PURPLE + " 0. 뒤로가기" + ConsoleMethod.RESET);
 					
 			String inputRoomId = sc.nextLine();
 			
 			if (inputRoomId.equals("0")) return ;
 			
 			if (!roomMap.containsKey(inputRoomId)) {
-				System.out.println("해당하는 방번호의 방은 없습니다. ");
+				System.out.println(ConsoleMethod.FONT_RED + "해당하는 방번호의 방은 없습니다. " + ConsoleMethod.RESET);
 			} else {
 				showRoomDetail(roomMap.get(inputRoomId));
 			}
@@ -122,17 +122,17 @@ public class ReservationSystem {
 			}
 		}
 		
-		System.out.println(room.getRoomId() + "번 방 상세 내역");
-		System.out.println("==================================================");
+		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    " + room.getRoomId() + "번 방 상세 내역                    " +ConsoleMethod.RESET);
+		System.out.println();
 		System.out.println("방 이름 : " + room.getRoomName());
 		System.out.println("최대 수용인원 : " + room.getCapacity());
 		System.out.println("방 상세 설명 : " + room.getDescription());
 		System.out.println();
-		System.out.println("******************** 후기(" + sameRoomIdReviewList.size() + ") **********************"  );
+		System.out.println("******************** 후기(" + sameRoomIdReviewList.size() + ") ********************"  );
 		
 		if (sameRoomIdReviewList.size() == 0) {
 			System.out.println();
-    		System.out.println("         아직 작성된 후기가 없습니다.        ");
+    		System.out.println("                   아직 작성된 후기가 없습니다.        ");
     		System.out.println();
 		} else {
 			for (Review review: sameRoomIdReviewList) {
@@ -147,7 +147,7 @@ public class ReservationSystem {
 		
 		System.out.println("**************************************************");
 		System.out.println("==================================================");
-		System.out.println("0.뒤로가기");
+		System.out.println(ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
 		
 		String back = null;
 		while (back == null) {
@@ -158,7 +158,9 @@ public class ReservationSystem {
 	
 	// 방 예약하기
 	private void reserveRoom() {
-		System.out.println("====================================");
+		System.out.println();
+		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    방 예약하기                    " +ConsoleMethod.RESET);
+		System.out.println();
 		Date checkInDate = null;
 		Date checkOutDate = null;
 		int dateDiff = 0;
@@ -196,9 +198,9 @@ public class ReservationSystem {
 	        	//
 	        	dateDiff = dateCalc.calcDateDiff(checkInDate,checkOutDate);
 	        } catch (ParseException e) {
-	            System.out.println("올바른 날짜 형식이 아닙니다.");
+	            System.out.println(ConsoleMethod.FONT_RED + "올바른 날짜 형식이 아닙니다." + ConsoleMethod.RESET);
 	        } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage()); 
+                System.out.println(ConsoleMethod.FONT_RED + e.getMessage() + ConsoleMethod.RESET); 
             }
 		}
 		
@@ -219,14 +221,16 @@ public class ReservationSystem {
 		List<Room> validRoomList = canReseveRoom(dateList,checkInPerson);
 		
 		while (true) {
-			System.out.println("***************************************");
-			System.out.println("예약가능한 방("+ validRoomList.size() + ")");
+			System.out.println();
+			System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    예약가능한 방("+ validRoomList.size() + ")                    " +ConsoleMethod.RESET);
+			System.out.println();
 			int idx = 1;
 			for (Room room : validRoomList) {
 				System.out.println(idx++ + ". " + room.getRoomId() + "번 방 / " + room.getRoomName() + "/ 최대 수용인원 : " + room.getCapacity());
 			}
-			System.out.println("***************************************");
-			System.out.println("예약 원하시는 방 번호를 입력하세요. | 0. 뒤로가기");
+			System.out.println();
+			System.out.println(ConsoleMethod.BACKGROUND_CYAN + "==============================" + ConsoleMethod.RESET);
+			System.out.println("예약 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
 			String inputRoomId = sc.nextLine();
 			
 			if (inputRoomId.equals("0")) return ;
@@ -237,11 +241,12 @@ public class ReservationSystem {
 			}
 			
 			if (pickRoom == null) {
-				System.out.println("일치하는 방번호가 없습니다.");
+				System.out.println(ConsoleMethod.FONT_RED + "일치하는 방번호가 없습니다." + ConsoleMethod.RESET);
 			} else {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				// 예약 정보 보여주기
-				System.out.println("====================================");
+				System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    예약 내역 확인                    " + ConsoleMethod.RESET);
+				System.out.println();
 				pickRoom.showRoomInfo();
 
 				System.out.println("숙박 인원 : " + checkInPerson + " / " + pickRoom.getCapacity());
@@ -261,8 +266,8 @@ public class ReservationSystem {
 				pickRoom.showTypeInfo();
 				System.out.println();
 				// 예약 확인
+				System.out.println("===================================");
 				System.out.println("이대로 예약하시겠습니까? (y/n)");
-				System.out.println("====================================");
 				String yesOrNo = sc.nextLine();
 				
 				if (yesOrNo.equalsIgnoreCase("y")) {
@@ -345,7 +350,10 @@ public class ReservationSystem {
     	// TODO : resercationLoad => user의 MyreservationID 로 뽑기
 		Map<String, Reservation> reservationMap = fileIO.reservationLoad();
     	Map<String,Reservation> myReservationMap = userSystem.getUser().getMyReservationMap();  
-    	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
+
+    	System.out.println();
+    	System.out.println( ConsoleMethod.BACKGROUND_CYAN + "                    " + userSystem.getUserId() + "님의 예약 내역                    " + ConsoleMethod.RESET);
+    	System.out.println();
 
     	for (Map.Entry<String, Reservation> reservation : myReservationMap.entrySet()) {
     		reservation.getValue().showInfo();
@@ -353,7 +361,7 @@ public class ReservationSystem {
 
     	// 예약취소
     	while (true) {
-    		System.out.println("1. 예약 취소 | 0.뒤로가기");
+    		System.out.println("1. 예약 취소 | " + ConsoleMethod.FONT_PURPLE +"0.뒤로가기" + ConsoleMethod.RESET);
     		String choice = sc.nextLine();
     		
     		if (choice.equals("0")) return ;
@@ -364,7 +372,7 @@ public class ReservationSystem {
     			return;
     		}
     		
-    		System.out.println("잘못된 입력입니다.");
+    		System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
     		
     	}
     	
@@ -373,14 +381,14 @@ public class ReservationSystem {
     // 예약 취소
     public void cancelReservation(Map<String,Reservation> myReservationMap) {
     	while (true) {
-    		System.out.println("취소를 원하는 예약번호를 입력해주세요. | 0. 뒤로가기");
+    		System.out.println("취소를 원하는 예약번호를 입력해주세요. | " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
     		String inputReservationId = sc.nextLine();
     		
     		if (inputReservationId.equals("0")) return;
     		
     		if (myReservationMap.containsKey(inputReservationId)) {
     			if (myReservationMap.get(inputReservationId).getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
-    				System.out.println("숙박 예정인 예약만 취소할 수 있습니다.");
+    				System.out.println(ConsoleMethod.FONT_RED + "숙박 예정인 예약만 취소할 수 있습니다." + ConsoleMethod.RESET);
     				return;
     			}
     			
@@ -398,10 +406,10 @@ public class ReservationSystem {
     			userSystem.getUser().getMyReservationMap().remove(inputReservationId);
     			
     			
-    			System.out.println("예약이 정상적으로 취소되었습니다.");
+    			System.out.println(ConsoleMethod.FONT_GREEN + "예약이 정상적으로 취소되었습니다." + ConsoleMethod.RESET);
     			return;
     		} else {
-    			System.out.println("해당하는 방 번호가 없습니다. ");
+    			System.out.println(ConsoleMethod.FONT_RED + "해당하는 방 번호가 없습니다. "+ ConsoleMethod.RESET);
     		}
     		
     	}
@@ -439,12 +447,12 @@ public class ReservationSystem {
             }
     	}
     	
-    	System.out.println("=======================리뷰 작성 가능(" + canWriteReviewReservation.size() +")===================");
+    	System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    리뷰 작성 가능(" + canWriteReviewReservation.size() +")                    " + ConsoleMethod.RESET);
     	if (canWriteReviewReservation.size() == 0) {
     		System.out.println();
     		System.out.println("         리뷰 작성할 수 있는 예약내역이 없습니다.        ");
     		System.out.println();
-    		System.out.println("==================================================");
+    		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                                                   " + ConsoleMethod.RESET);
     	
     	} else {
     		System.out.println();
@@ -455,11 +463,12 @@ public class ReservationSystem {
         			System.out.println("체크인 : " + dateFormat.format(reservation.getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getCheckOutDate()));
         			
         			System.out.println("----------------------------------------");
+        			System.out.println();
         	}
     	}
     	
     	while (true) {
-    		System.out.println("리뷰를 작성할 예약 번호를 입력하세요. | 0. 뒤로가기");
+    		System.out.println("리뷰를 작성할 예약 번호를 입력하세요. | " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
     		String inputReservationId = sc.nextLine();
     		
     		if (inputReservationId.equals("0")) return ;
@@ -473,7 +482,7 @@ public class ReservationSystem {
     		}
     		
     		if (pickReservation == null) {
-    			System.out.println("해당하는 방 번호가 없습니다. ");
+    			System.out.println(ConsoleMethod.FONT_RED +"해당하는 방 번호가 없습니다. " + ConsoleMethod.RESET);
     		} else {
     			writeReview(pickReservation);
     			return;
@@ -490,18 +499,21 @@ public class ReservationSystem {
     	Map<String,Review> reviewMap = fileIO.reviewLoad();
 
     	while (true) {
-    		
-    		System.out.println("=========================================");
+    		System.out.println();
+    		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    리뷰 작성                    " + ConsoleMethod.RESET);
+    		System.out.println();
     		System.out.println("별점 (1 - 5) : ");
     		int inputScore = Integer.parseInt(sc.nextLine());
     		System.out.println("후기를 남겨주세요 : ");
     		String inputReviewDetail = sc.nextLine();
-    		System.out.println("=========================================");
+    		System.out.println();
+    		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                                             " + ConsoleMethod.RESET);
+    		System.out.println();
     		System.out.println(reservation.getRoomId() + "번 방 리뷰");
     		System.out.println("점수 : " + scoreMap.get(inputScore) );
     		System.out.println("후기 : " + inputReviewDetail);
     		System.out.println("====================================");
-    		System.out.println("이대로 남기시겠습니까? (y/n) | 0. 뒤로가기 ");
+    		System.out.println("이대로 남기시겠습니까? (y/n) | " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기 " + ConsoleMethod.RESET);
     		String yesOrNo = sc.nextLine();
     		
     		if (yesOrNo.equals("0")) return ;
@@ -522,7 +534,7 @@ public class ReservationSystem {
     			
     			userSystem.getUser().getMyReservationMap().get(reservation.getReservationId()).setReviewed(true);
     			
-    			System.out.println("리뷰가 정상적으로 작성되었습니다.");
+    			System.out.println(ConsoleMethod.FONT_GREEN + "리뷰가 정상적으로 작성되었습니다." + ConsoleMethod.RESET);
     			break;
     		}
     		
@@ -536,12 +548,12 @@ public class ReservationSystem {
     public void showAllReviewOfMine() {
     	Map<String,Review> reviewMap = fileIO.reviewLoad();
     	
-    	System.out.println("=======================내가 작성한 리뷰(" + reviewMap.size() +")===================");
+    	System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    내가 작성한 리뷰(" + reviewMap.size() +")                    "+ConsoleMethod.RESET);
     	if (reviewMap.size() == 0) {
     		System.out.println();
-    		System.out.println("         아직 작성한 리뷰가 없습니다...        ");
+    		System.out.println("         아직 작성한 리뷰가 없습니다.        ");
     		System.out.println();
-    		System.out.println("==================================================");
+    		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                                                    " + ConsoleMethod.RESET);
     	
     	} else {
     		System.out.println();
@@ -552,6 +564,7 @@ public class ReservationSystem {
     			System.out.println(review.getValue().getRoomId() + "번 방");
     			System.out.println(userSystem.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getValue().getScore()) );
     			System.out.println("후기 : " + review.getValue().getContent());
+    			System.out.println();
     			System.out.println("----------------------------------------");
     		}
     	}
