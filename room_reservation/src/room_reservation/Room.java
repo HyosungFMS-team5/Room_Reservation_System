@@ -64,8 +64,4 @@ public abstract class Room implements Serializable {
 		System.out.println("2. 침구류 더 필요할 시 관리실에 문의");
 	}
 
-    public Room containsKey(String roomId2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsKey'");
-    };
 }

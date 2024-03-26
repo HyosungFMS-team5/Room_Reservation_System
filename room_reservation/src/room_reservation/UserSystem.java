@@ -39,7 +39,6 @@ public class UserSystem {
 
 		System.out.println("1. 로그인 | 2. 회원가입 |" + ConsoleMethod.FONT_PURPLE + " 0. 뒤로 가기" + ConsoleMethod.RESET);
 		System.out.println("---------------------------------------");
-		System.out.println();
 
 		String choice = sc.nextLine();
 		System.out.println();
@@ -70,7 +69,6 @@ public class UserSystem {
 
 		System.out.println("1. 펜션 메뉴로 이동 | 2. 로그아웃 | 3. 전화번호 수정 | 4. 비밀번호 수정 | "  + ConsoleMethod.FONT_RED + "5. 회원탈퇴"  + ConsoleMethod.RESET);
 		System.out.println("---------------------------------------");
-		System.out.println();
 
 		String choice = sc.nextLine();
 		System.out.println();
@@ -105,7 +103,8 @@ public class UserSystem {
 	// 로그인
 	private void login() {
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "		  로그인		  " + ConsoleMethod.RESET);
-
+		System.out.println();
+		
 		// 추가기능 - 로그인 시도 횟수 제한
 
 		// 아이디 입력
@@ -137,6 +136,8 @@ public class UserSystem {
 	// 회원가입
 	private void signUp() {
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "		  회원가입		  " + ConsoleMethod.RESET);
+		System.out.println();
+		
 		// 아이디 입력
 		userInputer = new UserInputerSignupID(sc, "아이디를 입력해주세요", "0", "회원가입", userMap);
 		String inputID = userInputer.validatedInput();
@@ -164,7 +165,8 @@ public class UserSystem {
 	// 전화번호 수정
 	private void updatePhone() {
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "          전화 번호 수정          " + ConsoleMethod.RESET);
-
+		System.out.println();
+		
 		System.out.println("현재 저장된 번호 : " + user.getPhone());
 		// 전화번호 입력
 		userInputer = new UserInputerSignupPhone(sc, "수정할 전화번호를 입력해주세요.(OOO-OOOO-OOOO)", "0", "전화번호 수정");
@@ -184,7 +186,8 @@ public class UserSystem {
 	// 비밀번호 수정
 	private void updatePW() {
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "		  비밀번호 수정		  " + ConsoleMethod.RESET);
-
+		System.out.println();
+		
 		// 현재 비밀번호 입력
 		userInputer = new UserInputerLoginPW(sc, "현재 비밀번호 입력해주세요", "0", "비밀번호 수정");
 		String confirmPW = userInputer.validatedInput(userMap.get(user.getUserID()).getUserPW());
@@ -206,8 +209,9 @@ public class UserSystem {
 	// 회원 정보 삭제
 	private void deleteInfo() {
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "		  회원정보 삭제		  " + ConsoleMethod.RESET);
-
-		System.out.println(ConsoleMethod.FONT_RED + "정말로 회원정보를 삭제하시겠습니까?(예: y)"  + ConsoleMethod.RESET);
+		System.out.println();
+		
+		System.out.println("정말로 회원정보를 삭제하시겠습니까?(예: y)");
 		String choice = sc.nextLine();
 
 		System.out.println();
@@ -220,9 +224,9 @@ public class UserSystem {
 			fileIO.userSave(userMap);
 			// 로그아웃
 			logout(); 
-			System.out.println(ConsoleMethod.FONT_RED + "회원정보 삭제 완료" + ConsoleMethod.RESET);
+			System.out.println(ConsoleMethod.FONT_GREEN + "회원정보 삭제 완료" + ConsoleMethod.RESET);
 		} else {
-			System.out.println(ConsoleMethod.FONT_GREEN + "회원정보 삭제 취소" + ConsoleMethod.RESET);
+			System.out.println(ConsoleMethod.FONT_RED + "취소되었습니다." + ConsoleMethod.RESET);
 		}
 	}
 
