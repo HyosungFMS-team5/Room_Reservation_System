@@ -63,7 +63,7 @@ public class AdminSystem {
             System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
             break;
          }
-         System.out.println("-----------------------------------------------------------------------------------------------------------");
+         System.out.println("-------------------------------------------------------------------------------------------------------------");
       }
 
    }
@@ -101,7 +101,9 @@ public class AdminSystem {
 			if (inputRoomId.equals("0")) return ;
 			
 			if (!roomMap.containsKey(inputRoomId)) {
+            System.out.println();
 				System.out.println(ConsoleMethod.FONT_RED + "해당하는 방번호의 방은 없습니다. " + ConsoleMethod.RESET);
+            System.out.println();
 			} else {
 			   showRoomDetail(roomMap.get(inputRoomId));
             return;
@@ -342,7 +344,7 @@ public class AdminSystem {
    // 선택할 방 입력
    private String inputRoomId(String content) {
       showRoom();
-      System.out.println("-----------------------------------------------------------------------------------");
+      System.out.println("----------------------------------------------------------------------------------------");
       
       System.out.println(content + "할 방 ID를 입력해주세요.");
       return sc.nextLine();
