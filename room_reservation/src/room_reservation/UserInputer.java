@@ -47,7 +47,7 @@ abstract public class UserInputer {
 
 	// 문자열 입력기
 	private String inputer() {
-		System.out.print(guide + ConsoleMethod.FONT_PURPLE + "( " + cancleNum + ". 취소) : " + ConsoleMethod.RESET);
+		System.out.print(guide + ConsoleMethod.FONT_PURPLE + "(" + cancleNum + ". 취소) : " + ConsoleMethod.RESET);
 		String input = sc.nextLine();
 		// 취소시 null값 반환
 		if (input.equals(cancleNum)) {

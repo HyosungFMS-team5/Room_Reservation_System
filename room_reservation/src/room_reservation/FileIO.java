@@ -10,28 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-
-
-class AppendableObjectOutputStream extends ObjectOutputStream {
-
-    // 첫 번째 객체에 대해서만 헤더를 쓰도록 오버라이드
-    @Override
-    protected void writeStreamHeader() throws IOException {
-        // 파일의 시작이 아니라면, 헤더를 쓰지 않음
-        reset();
-    }
-
-    public AppendableObjectOutputStream(OutputStream out) throws IOException {
-        super(out);
-    }
-}
 
 
 public class FileIO {

@@ -1,7 +1,6 @@
 package room_reservation;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +15,5 @@ public class Review implements Serializable{
 	private String roomId;
 	private int score;
 	private String content;
-//	private LocalDate writtenDate;
 	
 }
