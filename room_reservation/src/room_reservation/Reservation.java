@@ -1,11 +1,13 @@
 package room_reservation;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import console.print.ConsoleMethod;
 import lombok.*;
 
 @Getter
@@ -35,4 +37,20 @@ public class Reservation implements Serializable{
 		this.price = price;
 		this.reserveDateList = reserveDateList;
 	}
+
+	public void showInfo() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if(isCanceled) {
+				System.out.println(ConsoleMethod.FONT_RED + "예약번호 : " + reservationId + " (관리자에 의해 취소된 예약입니다.)" + ConsoleMethod.RESET);
+			} else {
+				System.out.println("예약번호 : " + reservationId);
+    	}
+		System.out.println();
+
+		System.out.printf("예약자 : %s | 방번호 : %s | 숙박인원 : %d\n", userId, roomId, personCnt);
+		System.out.printf("체크인 : %s | 체크아웃 : %s\n",dateFormat.format(checkInDate), dateFormat.format(checkOutDate));
+		System.out.printf("리뷰 작성 여부 : %s\n", isReviewed() ? "O" : "X");
+		System.out.println("----------------------------------------");
+	}
+
 }

@@ -35,10 +35,10 @@ public class ReservationSystem {
 		this.dateCalc = new DateCalc();
 		this.scoreMap = Map.ofEntries(
     		    Map.entry(1, "★"),
-    		    Map.entry(2, "★★"),
-    		    Map.entry(3, "★★★"),
-    		    Map.entry(4, "★★★★"),
-    		    Map.entry(5, "★★★★★")
+    		    Map.entry(2, "★ ★"),
+    		    Map.entry(3, "★ ★ ★"),
+    		    Map.entry(4, "★ ★ ★ ★"),
+    		    Map.entry(5, "★ ★ ★ ★ ★")
     		);
 	}
 	
@@ -345,22 +345,10 @@ public class ReservationSystem {
     	// TODO : resercationLoad => user의 MyreservationID 로 뽑기
 		Map<String, Reservation> reservationMap = fileIO.reservationLoad();
     	Map<String,Reservation> myReservationMap = userSystem.getUser().getMyReservationMap();  
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
 
     	for (Map.Entry<String, Reservation> reservation : myReservationMap.entrySet()) {
-    		if(myReservationMap.get(reservation.getKey()).isCanceled()) {
-    			System.out.println(ConsoleMethod.FONT_RED + "예약번호 : " + reservation.getKey() + " (관리자에 의해 취소된 예약입니다.)" + ConsoleMethod.RESET);
-    		} else {
-    			System.out.println("예약번호 : " + reservation.getKey());
-    		}
-    		
-			System.out.println();
-			System.out.println("예약자 : " + reservation.getValue().getUserId() + "| 방번호 : " + reservation.getValue().getRoomId() + " | 숙박인원 : " + reservation.getValue().getPersonCnt());
-			System.out.println("체크인 : " + dateFormat.format(reservation.getValue().getCheckInDate()) + " ~ 체크아웃 : " + dateFormat.format(reservation.getValue().getCheckOutDate()));
-			System.out.println("리뷰 작성 여부 : " + (reservation.getValue().isReviewed() ? "O" : "X"));
-			System.out.println("관리자 취소 여부 : " + reservation.getValue().isCanceled());
-			System.out.println("----------------------------------------");
+    		reservation.getValue().showInfo();
     	}
 
     	// 예약취소
