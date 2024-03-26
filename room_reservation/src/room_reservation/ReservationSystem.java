@@ -343,10 +343,10 @@ public class ReservationSystem {
 	// 나의 예약 내역
     public void showMyReservation() {
     	// TODO : resercationLoad => user의 MyreservationID 로 뽑기
-
+		Map<String, Reservation> reservationMap = fileIO.reservationLoad();
     	Map<String,Reservation> myReservationMap = userSystem.getUser().getMyReservationMap();  
     	System.out.println("=============" + userSystem.getUserId() + "님의 예약 내역==============");
-    	
+
     	for (Map.Entry<String, Reservation> reservation : myReservationMap.entrySet()) {
     		reservation.getValue().showInfo();
     	}
