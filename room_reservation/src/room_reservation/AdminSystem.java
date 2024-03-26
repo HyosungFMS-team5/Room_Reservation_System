@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import console.print.ConsoleMethod;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -38,8 +41,8 @@ public class AdminSystem {
    // 메뉴 보여주기
    private void showMenu() {
       while(true) {
-         System.out.println("1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | 0. 뒤로 가기");
-         System.out.println("-------------------------------------------------------------------------------------------------------");
+         System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | " 
+                              + ConsoleMethod.FONT_PURPLE + "0. 뒤로 가기" + ConsoleMethod.RESET);
          String choice = sc.nextLine();
          switch (choice) {
          case "1":
@@ -63,10 +66,10 @@ public class AdminSystem {
          case "0":
             return;
          default:
-            System.out.println("잘못된 입력입니다.");
+            System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
             break;
          }
-         System.out.println("-------------------------------------------------------------------------------------------------------");
+         System.out.println("-----------------------------------------------------------------------------------------------------------");
       }
 
    }
@@ -77,32 +80,34 @@ public class AdminSystem {
       String inputPW = sc.nextLine();
       if (inputPW.equals(Admin.adminPW)) {
          loggedIn = true;
-         System.out.println("관리자 인증이 완료되었습니다.");
+         System.out.println();
+         System.out.println(ConsoleMethod.FONT_GREEN + "관리자 인증이 완료되었습니다." + ConsoleMethod.RESET);
+         System.out.println();
       }else{
-         System.out.println("관리자 로그인 실패 : 패스워드를 정확하게 입력해주세요.");
+         System.out.println(ConsoleMethod.FONT_RED + "관리자 로그인 실패 : 패스워드를 정확하게 입력해주세요." + ConsoleMethod.RESET);
+         System.out.println();
       }
       
    }
    
    // 방 목록 보여주기
    private void showRoom() {
-      System.out.println("-----------------------------------방 리스트-----------------------------------");
-		
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"-----------------------------------방 리스트-----------------------------------" + ConsoleMethod.RESET);
+		System.out.println();
 		while (true) {
 			for (Map.Entry<String, Room> e : roomMap.entrySet()) {
 				// 출력형식 수정해주세요.
 				e.getValue().showRoomInfo();
-            System.out.println("-----------------------------------------------------");
             System.out.println();
 			}
 			
-			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | 0. 뒤로가기");
+			System.out.println("상세 조회 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_PURPLE+  "0. 뒤로가기" + ConsoleMethod.RESET);
 			String inputRoomId = sc.nextLine();
 			
 			if (inputRoomId.equals("0")) return ;
 			
 			if (!roomMap.containsKey(inputRoomId)) {
-				System.out.println("해당하는 방번호의 방은 없습니다. ");
+				System.out.println(ConsoleMethod.FONT_RED + "해당하는 방번호의 방은 없습니다. " + ConsoleMethod.RESET);
 			} else {
 			   showRoomDetail(roomMap.get(inputRoomId));
             return;
@@ -113,7 +118,7 @@ public class AdminSystem {
 
    // 2. 방 추가
    private void addRoom() {
-      System.out.println("-----------------------------------방 추가-----------------------------------");
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"-----------------------------------방 추가-----------------------------------" + ConsoleMethod.RESET);
       // 방 정보 입력
       System.out.println("방ID를 입력해주세요. (0: 취소)");
       
@@ -121,11 +126,11 @@ public class AdminSystem {
       while(true) {
          roomId = sc.nextLine();
          if (!roomMap.containsKey(roomId)) break;
-         System.out.println("이미 존재하는 방 ID입니다.");
+         System.out.println(ConsoleMethod.FONT_RED+"이미 존재하는 방 ID입니다." + ConsoleMethod.RESET);
       }
       
       if (roomId.equals("0")) {
-         System.out.println("취소하셨습니다.");
+         System.out.println(ConsoleMethod.FONT_PURPLE + "취소하셨습니다." +ConsoleMethod.RESET);
          return;
       }
 
@@ -143,7 +148,7 @@ public class AdminSystem {
       Room room = null;
       while(room == null) {
          System.out.println("방 종류를 정해주세요.");
-         System.out.println("1.텐트형 | 2.캠핑카형 | 0.취소");
+         System.out.println("1.텐트형 | 2.캠핑카형 | " + ConsoleMethod.FONT_PURPLE + "0.취소" + ConsoleMethod.RESET);
          String roomType = sc.nextLine();
          switch (roomType) {
          case "1":
@@ -153,10 +158,10 @@ public class AdminSystem {
             room = new CampingCarRoom(roomId, roomName, baseCapacity, capacity, description, price);
             break;
          case "0":
-            System.out.println("입력을 취소하셨습니다.");
+            System.out.println(ConsoleMethod.FONT_PURPLE + "입력을 취소하셨습니다." + ConsoleMethod.RESET);
             return;
          default:
-            System.out.println("잘못된 입력입니다. 다시 시도해주십시오");
+            System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다. 다시 시도해주십시오" + ConsoleMethod.RESET);
             break;
          }
       }
@@ -167,7 +172,8 @@ public class AdminSystem {
    
    // 방 상세 조회
    private void showRoomDetail(Room room) {
-      System.out.printf("-----------------------------------%s번 방 상세 내역-----------------------------------\n", room.getRoomId());
+      System.out.printf(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "-----------------------------------%s번 방 상세 내역-----------------------------------\n" + ConsoleMethod.RESET, room.getRoomId());
+      System.out.println();
       room.showRoomInfo();
       
       System.out.println(room.getDescription());
@@ -187,7 +193,7 @@ public class AdminSystem {
          fileIO.roomSave(roomMap);
       }
       else {
-         System.out.println("해당하는 방 정보가 없습니다.");
+         System.out.println(ConsoleMethod.FONT_RED + "해당하는 방 정보가 없습니다." + ConsoleMethod.RESET);
       }
       
    }
@@ -205,16 +211,16 @@ public class AdminSystem {
          if(deleteYN.equals("y")){
             roomMap.remove(roomId); // 방 삭제
             fileIO.roomSave(roomMap); // 변경된 방 정보를 파일에 저장
-            System.out.println("방 정보가 성공적으로 삭제되었습니다.");
+            System.out.println(ConsoleMethod.FONT_GREEN + "방 정보가 성공적으로 삭제되었습니다." + ConsoleMethod.RESET);
             showRoom(); // 변경된 방 목록 출력
          }else if(deleteYN.equals("n")){
             return;
          }else{
-            System.out.println("잘못된 입력입니다.");
+            System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
          }
 
       } else {
-         System.out.println("해당하는 방 정보가 없습니다.");
+         System.out.println(ConsoleMethod.FONT_RED + "해당하는 방 정보가 없습니다." + ConsoleMethod.RESET);
       }
    }
 
@@ -248,7 +254,7 @@ public class AdminSystem {
          if (reservationMap.containsKey(inputReservationId)) {
             // 날짜 지난 예약은 취소 불가
             if (reservationMap.get(inputReservationId).getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
-               System.out.println("숙박 예정인 예약만 취소할 수 있습니다.");
+               System.out.println(ConsoleMethod.FONT_RED + "숙박 예정인 예약만 취소할 수 있습니다." + ConsoleMethod.RESET);
                return;
             }
 
@@ -268,10 +274,10 @@ public class AdminSystem {
             fileIO.reservationSave(reservationMap);
             
             
-            System.out.println("예약이 정상적으로 취소되었습니다.");
+            System.out.println(ConsoleMethod.FONT_GREEN + "예약이 정상적으로 취소되었습니다." + ConsoleMethod.RESET);
             return;
          } else {
-            System.out.println("해당하는 방 번호가 없습니다. ");
+            System.out.println(ConsoleMethod.FONT_RED + "해당하는 방 번호가 없습니다. " + ConsoleMethod.RESET);
          }
          
       }
@@ -291,8 +297,8 @@ public class AdminSystem {
 
    // 방 세부 정보 수정
    private boolean roomDetailInfoChange(Room room) {
-      System.out.println("-----------------------------------방 정보 수정-----------------------------------");
-      System.out.println("1.방 이름 / 2. 기준 인원 / 3. 최대 수용 인원 / 4. 방 상세 설명 / 5. 가격 / 0. 뒤로가기");
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"-----------------------------------방 정보 수정-----------------------------------" + ConsoleMethod.RESET);
+      System.out.println("1.방 이름 / 2. 기준 인원 / 3. 최대 수용 인원 / 4. 방 상세 설명 / 5. 가격 / " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
 
       boolean isChanged = true;
 
@@ -325,10 +331,10 @@ public class AdminSystem {
             break;
          case "0" : 
             isChanged = false;
-            System.out.println("방 정보 수정을 취소합니다.");
+            System.out.println(ConsoleMethod.FONT_PURPLE + "방 정보 수정을 취소합니다." + ConsoleMethod.RESET);
             break;
          default:
-            System.out.println("잘못된 입력입니다.");
+            System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
             break;
       }
 
@@ -347,11 +353,11 @@ public class AdminSystem {
 
    // 문자열 입력기
    private String inputString(String content) {
-      System.out.println(content + "을/를 입력해주세요. (0: 취소)");
+      System.out.println(content + "을/를 입력해주세요. " + ConsoleMethod.FONT_PURPLE + "(0: 취소)" + ConsoleMethod.RESET);
       String input = sc.nextLine();
 
       if (input.equals("0")) {
-         System.out.println("입력을 취소하였습니다.");
+         System.out.println(ConsoleMethod.FONT_GREEN + "입력을 취소하였습니다." + ConsoleMethod.RESET);
          input = null;
       } 
 
@@ -360,7 +366,7 @@ public class AdminSystem {
 
    // 숫자 입력기
    private int inputNumber(String content) {
-      System.out.println(content + "을/를 입력해주세요. (0: 취소)");
+      System.out.println(content + "을/를 입력해주세요. " + ConsoleMethod.FONT_PURPLE + "(0: 취소)" + ConsoleMethod.RESET);
       int input = 0;
 
       while(true) {
