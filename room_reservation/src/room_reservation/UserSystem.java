@@ -12,6 +12,7 @@ import lombok.Getter;
 public class UserSystem {
 	private Scanner sc;
 	private FileIO fileIO;
+	private DateCalc dateCalc;
 	private UserInputer userInputer;
 	private User user;
 	private String userId;
@@ -22,6 +23,7 @@ public class UserSystem {
 		this.sc = sc;
 		this.fileIO = fileIO;
 		this.userMap = fileIO.userLoad();
+		this.dateCalc = new DateCalc();
 	}
 	
 	// 실행 함수
@@ -242,8 +244,8 @@ public class UserSystem {
 			// Room 객체 내부 예약 데이터 삭제
 			Reservation reservation = e.getValue();
 			Room room = roomMap.get(reservation.getRoomId());
-			int dateDiff = DateCalc.calcDateDiff(reservation.getCheckInDate(), reservation.getCheckOutDate());
-			for (String bookedDate : DateCalc.getDateRange(reservation.getCheckInDate(), dateDiff)) {
+			int dateDiff = dateCalc.calcDateDiff(reservation.getCheckInDate(), reservation.getCheckOutDate());
+			for (String bookedDate : dateCalc.getDateRange(reservation.getCheckInDate(), dateDiff)) {
 				room.getBookedDate().remove(bookedDate);
 			}
 		}

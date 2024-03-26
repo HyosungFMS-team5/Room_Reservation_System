@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DateCalc {
 	// 체크할 날짜 리스트 return
-    public static List<String> getDateRange(Date startDate, int dateDiff) {
+    public List<String> getDateRange(Date startDate, int dateDiff) {
         List<String> dateList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
@@ -25,7 +25,7 @@ public class DateCalc {
     }
 	
 	// 체크인 체크아웃 날짜의 차 계산
-    public static int calcDateDiff(Date startDate, Date endDate) {
+    public int calcDateDiff(Date startDate, Date endDate) {
         long differenceInMilliseconds = endDate.getTime() - startDate.getTime();
         long differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
         return (int) differenceInDays; 
