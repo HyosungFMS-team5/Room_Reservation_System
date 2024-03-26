@@ -123,6 +123,7 @@ public class ReservationSystem {
 		}
 		
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    " + room.getRoomId() + "번 방 상세 내역                    " +ConsoleMethod.RESET);
+		ConsoleMethod.roomDetail(Integer.parseInt(room.getRoomId()));
 		System.out.println();
 		System.out.println("방 이름 : " + room.getRoomName());
 		System.out.println("최대 수용인원 : " + room.getCapacity());
