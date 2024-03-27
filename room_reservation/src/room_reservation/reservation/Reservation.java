@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import console.ConsoleMethod;
+import consolemethod.ConsoleMethod;
 import lombok.*;
 
 @Getter

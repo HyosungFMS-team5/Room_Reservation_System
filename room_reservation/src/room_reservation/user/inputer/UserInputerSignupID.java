@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import console.ConsoleMethod;
+import consolemethod.ConsoleMethod;
 import room_reservation.user.User;
 
 public class UserInputerSignupID extends UserInputer{

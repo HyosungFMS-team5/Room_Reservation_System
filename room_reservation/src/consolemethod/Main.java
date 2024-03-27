@@ -1,3 +1,4 @@
+package consolemethod;
 import room_reservation.Menu;
 
 public class Main {

@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.TreeSet;
 
-import console.ConsoleMethod;
+import consolemethod.ConsoleMethod;
 import datecalc.DateCalc;
 import fileio.FileIO;
 import room_reservation.reservation.Reservation;

@@ -3,7 +3,7 @@ package room_reservation.user.inputer;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import console.ConsoleMethod;
+import consolemethod.ConsoleMethod;
 
 public class UserInputerSignupPhone extends UserInputer{
 

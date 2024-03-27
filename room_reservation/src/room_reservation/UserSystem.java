@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import console.ConsoleMethod;
+import consolemethod.ConsoleMethod;
 import datecalc.DateCalc;
 import fileio.FileIO;
 import lombok.Getter;

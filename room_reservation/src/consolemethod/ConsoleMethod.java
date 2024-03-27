@@ -1,4 +1,4 @@
-package console;
+package consolemethod;
 
 public class ConsoleMethod {
 	public static final String RESET = "\u001B[0m";    

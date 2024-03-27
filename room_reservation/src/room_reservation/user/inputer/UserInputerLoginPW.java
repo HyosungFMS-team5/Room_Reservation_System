@@ -2,7 +2,7 @@ package room_reservation.user.inputer;
 
 import java.util.Scanner;
 
-import console.ConsoleMethod;
+import consolemethod.ConsoleMethod;
 
 public class UserInputerLoginPW extends UserInputer{
 
