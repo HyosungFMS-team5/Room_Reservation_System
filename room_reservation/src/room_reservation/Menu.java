@@ -36,7 +36,7 @@ public class Menu {
 		while (true) {
 			ConsoleMethod.StartSystem1();
 			ConsoleMethod.StartSystem2();
-			System.out.println("|⠀⠀⠀⠀⡇⠀⠀1. 관리자 로그인⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⢕⠀⠀2. 사용자 로그인⠀ ⠀⡇⠀⠀⠀⠀|");
+			System.out.println("|⠀⠀⠀⠀⡇⠀⠀1. 관리자 로그인⠀⠀⡇⠀⠀⠀⠀⠀⠀⢕⠀⠀2. 사용자 로그인⠀ ⡇⠀⠀⠀⠀ |");
 			ConsoleMethod.StartSystem3();
 			
 			String choice = sc.nextLine();
