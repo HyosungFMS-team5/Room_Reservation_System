@@ -90,7 +90,7 @@ public class ReservationSystem {
 		
 		while (true) {
 
-			System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    예약 가능한 숙소(" + roomMap.size() +")                    " + ConsoleMethod.RESET);
+			System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    전체 숙소 목록(" + roomMap.size() +")                    " + ConsoleMethod.RESET);
 			System.out.println();
 			for (String key : sortedKeys) {
 				System.out.println();
@@ -141,7 +141,7 @@ public class ReservationSystem {
 			for (Review review: sameRoomIdReviewList) {
     			System.out.println();
     			System.out.println(review.getRoomId() + "번 방");
-    			System.out.println(userSystem.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getScore()) );
+    			System.out.println(review.getUserId() + "님의 리뷰 - "+ scoreMap.get(review.getScore()) );
     			System.out.println("후기 : " + review.getContent());
     			System.out.println();
     			System.out.println("----------------------------------------");

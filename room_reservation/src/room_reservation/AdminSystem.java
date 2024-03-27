@@ -1,12 +1,16 @@
 package room_reservation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 import consolemethod.ConsoleMethod;
 import fileio.FileIO;
 import room_reservation.admin.Admin;
 import room_reservation.reservation.Reservation;
+import room_reservation.reservation.Review;
 import room_reservation.room.CampingCarRoom;
 import room_reservation.room.Room;
 import room_reservation.room.TentRoom;
@@ -21,11 +25,17 @@ public class AdminSystem {
 	FileIO fileIO;
 	boolean loggedIn;
 	Map<String, Room> roomMap;
+	private Map<Integer, String> scoreMap;
 
 	public AdminSystem(Scanner sc, FileIO fileIO) {
 		this.sc = sc;
 		this.fileIO = fileIO;
 		roomMap = fileIO.roomLoad();
+		this.scoreMap = Map.ofEntries(Map.entry(1, ConsoleMethod.FONT_YELLOW + "★" + ConsoleMethod.RESET),
+				Map.entry(2, ConsoleMethod.FONT_YELLOW + "★ ★" + ConsoleMethod.RESET),
+				Map.entry(3, ConsoleMethod.FONT_YELLOW + "★ ★ ★" + ConsoleMethod.RESET),
+				Map.entry(4, ConsoleMethod.FONT_YELLOW + "★ ★ ★ ★" + ConsoleMethod.RESET),
+				Map.entry(5, ConsoleMethod.FONT_YELLOW + "★ ★ ★ ★ ★" + ConsoleMethod.RESET));
 	}
 
 	// 실행 함수
@@ -51,7 +61,7 @@ public class AdminSystem {
 			String choice = sc.nextLine();
 			switch (choice) {
 			case "1":
-				showRoom();
+				showAllRoom();
 				break;
 			case "2":
 				addRoom();
@@ -97,34 +107,97 @@ public class AdminSystem {
 
 	}
 
-	// 방 목록 보여주기
-	private void showRoom() {
+//	 방 목록 보여주기
+	private void showList() {
 		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK
 				+ "                    방 리스트                    " + ConsoleMethod.RESET);
 		System.out.println();
+
+		for (Map.Entry<String, Room> e : roomMap.entrySet()) {
+			// 출력형식 수정해주세요.
+			e.getValue().showRoomInfo();
+			System.out.println();
+
+		}
+	}
+
+	private void showAllRoom() {
+		Map<String, Room> roomMap = fileIO.roomLoad();
+
+		TreeSet<String> sortedKeys = new TreeSet<>(roomMap.keySet());
+
 		while (true) {
-			for (Map.Entry<String, Room> e : roomMap.entrySet()) {
-				// 출력형식 수정해주세요.
-				e.getValue().showRoomInfo();
+
+			System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    전체 숙소 목록(" + roomMap.size()
+					+ ")                    " + ConsoleMethod.RESET);
+			System.out.println();
+			for (String key : sortedKeys) {
 				System.out.println();
+				roomMap.get(key).showRoomInfo();
 			}
 
 			System.out.println(
-					"상세 조회 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
+					"상세 조회 원하시는 방 번호를 입력하세요. | " + ConsoleMethod.FONT_PURPLE + " 0. 뒤로가기" + ConsoleMethod.RESET);
+
 			String inputRoomId = sc.nextLine();
 
 			if (inputRoomId.equals("0"))
 				return;
 
 			if (!roomMap.containsKey(inputRoomId)) {
-				System.out.println();
 				System.out.println(ConsoleMethod.FONT_RED + "해당하는 방번호의 방은 없습니다. " + ConsoleMethod.RESET);
-				System.out.println();
 			} else {
 				showRoomDetail(roomMap.get(inputRoomId));
 				return;
 			}
 
+		}
+
+	}
+
+	// 방 상세 조회
+	private void showRoomDetail(Room room) {
+		Map<String, Review> reviewMap = fileIO.reviewLoad();
+		List<Review> sameRoomIdReviewList = new ArrayList<>();
+
+		for (Map.Entry<String, Review> review : reviewMap.entrySet()) {
+			if (review.getValue().getRoomId().equals(room.getRoomId())) {
+				sameRoomIdReviewList.add(review.getValue());
+			}
+		}
+
+		System.out.println(ConsoleMethod.BACKGROUND_CYAN + "                    " + room.getRoomId()
+				+ "번 방 상세 내역                    " + ConsoleMethod.RESET);
+		ConsoleMethod.roomDetail(Integer.parseInt(room.getRoomId()));
+		System.out.println();
+		System.out.println("방 이름 : " + room.getRoomName());
+		System.out.println("최대 수용인원 : " + room.getCapacity());
+		System.out.println("방 상세 설명 : " + room.getDescription());
+		System.out.println();
+		System.out.println("******************** 후기(" + sameRoomIdReviewList.size() + ") ********************");
+
+		if (sameRoomIdReviewList.size() == 0) {
+			System.out.println();
+			System.out.println("                   아직 작성된 후기가 없습니다.        ");
+			System.out.println();
+		} else {
+			for (Review review : sameRoomIdReviewList) {
+				System.out.println();
+				System.out.println(review.getRoomId() + "번 방");
+				System.out.println(review.getUserId() + "님의 리뷰 - " + scoreMap.get(review.getScore()));
+				System.out.println("후기 : " + review.getContent());
+				System.out.println();
+				System.out.println("----------------------------------------");
+			}
+		}
+
+		System.out.println("**************************************************");
+		System.out.println("==================================================");
+		System.out.println(ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
+
+		String back = null;
+		while (back == null) {
+			back = sc.nextLine();
 		}
 	}
 
@@ -190,20 +263,23 @@ public class AdminSystem {
 	}
 
 	// 방 상세 조회
-	private void showRoomDetail(Room room) {
-		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "                   "
-				+ room.getRoomId() + "번 방 상세 내역                    " + ConsoleMethod.RESET);
-		System.out.println();
-		room.showRoomInfo();
-
-		System.out.println(room.getDescription());
-
-	}
+//	private void showRoomDetail(Room room) {
+//		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "                   "
+//				+ room.getRoomId() + "번 방 상세 내역                    " + ConsoleMethod.RESET);
+//		System.out.println();
+//		room.showRoomInfo();
+//
+//		System.out.println(room.getDescription());
+//
+//	}
 
 	// 방 정보 수정
 	private void roomInfoChange() {
+		showList();
 
 		String roomId = inputRoomId("수정");
+		
+		if (roomId == null) return;
 
 		if (roomMap.containsKey(roomId)) {
 			Room room = roomMap.get(roomId);
@@ -219,7 +295,12 @@ public class AdminSystem {
 
 	// 방 정보 삭제
 	private void deleteRoomInfo() {
+		showList();
+		
 		String roomId = inputRoomId("삭제");
+		
+		if (roomId == null) return;
+		
 		String deleteYN;
 
 		if (roomMap.containsKey(roomId)) {
@@ -230,7 +311,7 @@ public class AdminSystem {
 				roomMap.remove(roomId); // 방 삭제
 				fileIO.roomSave(roomMap); // 변경된 방 정보를 파일에 저장
 				System.out.println(ConsoleMethod.FONT_GREEN + "방 정보가 성공적으로 삭제되었습니다." + ConsoleMethod.RESET);
-				showRoom(); // 변경된 방 목록 출력
+				showList(); // 변경된 방 목록 출력
 			} else if (deleteYN.equals("n")) {
 				return;
 			} else {
@@ -380,11 +461,17 @@ public class AdminSystem {
 
 	// 선택할 방 입력
 	private String inputRoomId(String content) {
-		showRoom();
 		System.out.println("----------------------------------------------------------------------------------------");
 
-		System.out.println(content + "할 방 ID를 입력해주세요.");
-		return sc.nextLine();
+		System.out.println(content + "할 방 ID를 입력해주세요." + ConsoleMethod.FONT_PURPLE + "(0: 취소)" + ConsoleMethod.RESET);
+		String input = sc.nextLine();
+		
+		if (input.equals("0")) {
+			System.out.println(ConsoleMethod.FONT_GREEN + "입력을 취소하였습니다." + ConsoleMethod.RESET);
+			input = null;
+		}
+
+		return input;
 	}
 
 	// 문자열 입력기
