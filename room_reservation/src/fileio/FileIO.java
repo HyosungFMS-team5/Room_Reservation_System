@@ -1,4 +1,4 @@
-package room_reservation;
+package fileio;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -12,6 +12,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import room_reservation.reservation.Reservation;
+import room_reservation.reservation.Review;
+import room_reservation.room.Room;
+import room_reservation.user.User;
 
 
 public class FileIO {

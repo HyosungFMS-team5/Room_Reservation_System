@@ -1,4 +1,4 @@
-package room_reservation;
+package room_reservation.reservation;
 
 import java.io.Serializable;
 

@@ -2,7 +2,8 @@ package room_reservation;
 
 import java.util.Scanner;
 
-import console.print.ConsoleMethod;
+import console.ConsoleMethod;
+import fileio.FileIO;
 
 public class Menu {
 	private Scanner sc;

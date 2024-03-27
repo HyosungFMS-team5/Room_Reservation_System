@@ -1,8 +1,8 @@
-package room_reservation;
+package room_reservation.user.inputer;
 
 import java.util.Scanner;
 
-import console.print.ConsoleMethod;
+import console.ConsoleMethod;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

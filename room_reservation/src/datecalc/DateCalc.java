@@ -1,4 +1,4 @@
-package datecalc.util;
+package datecalc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

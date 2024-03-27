@@ -1,11 +1,11 @@
-package room_reservation;
+package room_reservation.reservation;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import console.print.ConsoleMethod;
+import console.ConsoleMethod;
 import lombok.*;
 
 @Getter

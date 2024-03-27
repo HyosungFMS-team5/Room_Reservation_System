@@ -1,9 +1,9 @@
-package room_reservation;
+package room_reservation.user.inputer;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import console.print.ConsoleMethod;
+import console.ConsoleMethod;
 
 public class UserInputerSignupPhone extends UserInputer{
 

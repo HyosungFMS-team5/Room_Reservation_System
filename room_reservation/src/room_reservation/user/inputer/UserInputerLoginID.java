@@ -1,9 +1,10 @@
-package room_reservation;
+package room_reservation.user.inputer;
 
 import java.util.Map;
 import java.util.Scanner;
 
-import console.print.ConsoleMethod;
+import console.ConsoleMethod;
+import room_reservation.user.User;
 
 public class UserInputerLoginID extends UserInputer{
   private Map<String,User> userMap;
