@@ -35,8 +35,10 @@ public class AdminSystem {
    // 메뉴 보여주기
    private void showMenu() {
       while(true) {
-         System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | " 
+         System.out.println("1.방 목록 보기 | 2.방 추가 | 3.방 정보 수정 | 4.방 삭제 | 5.예약 내역 조회 | 6. 예약 내역 취소 | " 
                               + ConsoleMethod.FONT_PURPLE + "0. 뒤로 가기" + ConsoleMethod.RESET);
+         System.out.println("-----------------------------------------------------------------------------------------------");
+         
          String choice = sc.nextLine();
          switch (choice) {
          case "1":
@@ -63,7 +65,8 @@ public class AdminSystem {
             System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
             break;
          }
-         System.out.println("-------------------------------------------------------------------------------------------------------------");
+         System.out.println("=================================================================================================");
+         System.out.println();
       }
 
    }
@@ -86,7 +89,7 @@ public class AdminSystem {
    
    // 방 목록 보여주기
    private void showRoom() {
-      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"-----------------------------------방 리스트-----------------------------------" + ConsoleMethod.RESET);
+   		System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"                    방 리스트                    " + ConsoleMethod.RESET);
 		System.out.println();
 		while (true) {
 			for (Map.Entry<String, Room> e : roomMap.entrySet()) {
@@ -114,9 +117,9 @@ public class AdminSystem {
 
    // 2. 방 추가
    private void addRoom() {
-      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"-----------------------------------방 추가-----------------------------------" + ConsoleMethod.RESET);
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"                    방 추가                    " + ConsoleMethod.RESET);
       // 방 정보 입력
-      System.out.println("방ID를 입력해주세요. (0: 취소)");
+      System.out.println("방ID를 입력해주세요." + ConsoleMethod.FONT_PURPLE+ "(0: 취소)" + ConsoleMethod.RESET);
       
       String roomId=null;
       while(true) {
@@ -154,7 +157,7 @@ public class AdminSystem {
             room = new CampingCarRoom(roomId, roomName, baseCapacity, capacity, description, price);
             break;
          case "0":
-            System.out.println(ConsoleMethod.FONT_PURPLE + "입력을 취소하셨습니다." + ConsoleMethod.RESET);
+            System.out.println(ConsoleMethod.FONT_RED + "입력을 취소하셨습니다." + ConsoleMethod.RESET);
             return;
          default:
             System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다. 다시 시도해주십시오" + ConsoleMethod.RESET);
@@ -168,7 +171,7 @@ public class AdminSystem {
    
    // 방 상세 조회
    private void showRoomDetail(Room room) {
-      System.out.printf(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "-----------------------------------%s번 방 상세 내역-----------------------------------\n" + ConsoleMethod.RESET, room.getRoomId());
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK + "                   " + room.getRoomId() + "번 방 상세 내역                    " + ConsoleMethod.RESET);
       System.out.println();
       room.showRoomInfo();
       
@@ -222,6 +225,8 @@ public class AdminSystem {
 
    // 예약 내역 조회
    private void showReservation() {
+	  System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"                    예약 내역 조회                    " + ConsoleMethod.RESET);
+	  
       // 에약내역 파일 불러오면 예약 내역 조회가 된다.
       Map<String, Reservation> reservationMap = fileIO.reservationLoad();
       
@@ -233,12 +238,15 @@ public class AdminSystem {
    
     // 예약 취소
     public void cancelReservation() {
+    	
       showReservation();
+      
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"                    예약 내역 취소                    " + ConsoleMethod.RESET);
 
       Map<String, Reservation> reservationMap = fileIO.reservationLoad();
-       
+      
       while (true) {
-         System.out.println("취소를 원하는 예약번호를 입력해주세요. | 0. 뒤로가기");
+         System.out.println("취소를 원하는 예약번호를 입력해주세요. |  " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
          String inputReservationId = sc.nextLine();
          
          if (inputReservationId.equals("0")) return;
@@ -248,13 +256,13 @@ public class AdminSystem {
             // 날짜 지난 예약은 취소 불가
 
             if (reservation.getCheckOutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now())) {
-               System.out.println("숙박 예정인 예약만 취소할 수 있습니다. 다시 선택해주세요.");
+               System.out.println(ConsoleMethod.FONT_RED + "숙박 예정인 예약만 취소할 수 있습니다. 다시 선택해주세요." + ConsoleMethod.RESET);
                continue;
             }
 
             // 이미 취소 됐는지 확인
             if (reservation.isCanceled()) {
-               System.out.println("이미 취소된 예약입니다. 다시 선택해주세요.");
+               System.out.println(ConsoleMethod.FONT_RED + "이미 취소된 예약입니다. 다시 선택해주세요." + ConsoleMethod.RESET);
                continue;
             }
 
@@ -296,7 +304,7 @@ public class AdminSystem {
 
    // 방 세부 정보 수정
    private boolean roomDetailInfoChange(Room room) {
-      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"-----------------------------------방 정보 수정-----------------------------------" + ConsoleMethod.RESET);
+      System.out.println(ConsoleMethod.BACKGROUND_CYAN + ConsoleMethod.FONT_BLACK +"                    방 정보 수정                    " + ConsoleMethod.RESET);
       System.out.println("1.방 이름 / 2. 기준 인원 / 3. 최대 수용 인원 / 4. 방 상세 설명 / 5. 가격 / " + ConsoleMethod.FONT_PURPLE + "0. 뒤로가기" + ConsoleMethod.RESET);
 
       boolean isChanged = true;
@@ -330,7 +338,7 @@ public class AdminSystem {
             break;
          case "0" : 
             isChanged = false;
-            System.out.println(ConsoleMethod.FONT_PURPLE + "방 정보 수정을 취소합니다." + ConsoleMethod.RESET);
+            System.out.println(ConsoleMethod.FONT_RED + "방 정보 수정을 취소합니다." + ConsoleMethod.RESET);
             break;
          default:
             System.out.println(ConsoleMethod.FONT_RED + "잘못된 입력입니다." + ConsoleMethod.RESET);
